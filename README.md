@@ -198,6 +198,36 @@ After compiling ww got output for N=5, N=100, N=10, N=50 and N=3.
 
 <img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b78810ad-5bfa-4c56-ae09-728b3f0d8a4d">
 
+### RISC-V GCC compile and Disassemble
+#### Note:
+we use "cat" command to reads data from the file and gives its content as output. "cat" tends for concatenate.
+we open the program.
+Now, we will compile this program with different RISC-V GCC compiler by command "riscv-unknown-elf-gcc -O1 -mabi=lp64 -march=rv64i -o Sum1toN.o Sum1toN.c".
+Here we can this Sum1toN.o file.
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/41f129a3-ff9a-4eb3-856c-c984db791099">
+
+Now we will see the Assembly code for this C-program in another terminal, by command "riscv-unknown-elf-objdump -d Sum1toN.o".
+Here we can see the instruction set for the C-program in assembly language,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/99587625-bf28-4cf3-a851-e3839fcb75a8">
+
+Now by searching "main" section we get instructions and address of "main" section.
+
+<img width="959" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/47e972a4-bb1f-4d19-937d-c32fb92ddcb8">
+
+Adress of "main" is 10184 and other instructions were given below ara at 10188,10192 etc. so memory is byte addressable (4 byte for 1 instruction. so instruction is 32bit instruction). Total 26 instruction came out of "O1" compiler.
+
+Lets run same program in the other compiler -Ofast instead of -O1 by command "riscv-unknown-elf-gcc -Ofast -mabi=lp64 -march=rv64i -o Sum1toN.o Sum1toN.c".
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ff660bed-1bb7-44b5-87aa-573cc0d48037">
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/a70dc315-ae25-4c7d-b5bd-70f3d7900bbf">
+
+Now here, Adress of "main" is 100b0 and other instructions were given below ara at 100b4,100b8 etc. so here also memory is byte addressable (4 byte for 1 instruction. so instruction is 32bit instruction). Total 26 instruction came out of "Ofast" compiler.
+
+
+
+
+
 
 
 
