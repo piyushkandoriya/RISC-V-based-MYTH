@@ -189,6 +189,16 @@ By some instructions, some memory transfer heppend. so these instructions are ca
 
 ## <h1 id="header-1_2">Labwork for RISC_V software toolchain</h1>
 ### C-Program to compute sum from 1 to N
+C-program for sum of 1 to N is,
+
+<img width="959" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f8a924a4-2c57-45a5-a69a-c8a11741f300">
+
+Here we use "gcc" for compile the program. GCC tends for GNU Compiler Collection.
+After compiling ww got output for N=5, N=100, N=10, N=50 and N=3.
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b78810ad-5bfa-4c56-ae09-728b3f0d8a4d">
+
+
 
 
 
