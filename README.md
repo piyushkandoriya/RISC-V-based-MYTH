@@ -88,7 +88,37 @@
   </ul>
 </div>
 
-# <h1 id="header-1">Day 1 -Introduction to RISC-V ISA and GNU compiler toolchain</h1>	 
+# <h1 id="header-1">Day 1 -Introduction to RISC-V ISA(instruction set architecture) and GNU compiler toolchain</h1>	 
 ## <h1 id="header-1_1">Introduction to RISC-V basic keyword</h1>
 ### Introduction
-  
+ISA (Instruction Set Architecture) is nothing but language of the computer in which we are giving some command to the computer.
+
+For example if we have a C-program like this,
+
+<img width="72" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b6ad9f86-fa2f-4e86-8483-18902b60e7b1">
+
+And we want to run this program in a hardware of our computer like this,
+
+<img width="281" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/254ce94f-487b-4edb-908d-2f563ed8c2e9">
+
+This is nothing but the layout of our computer hardware.
+To run this program, first this program will compile in assembly language (which is nothing but RISC-V assembly language program for above code) 
+
+<img width="69" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/5318e198-6721-47f4-8f4d-2c8b30c73c11">
+
+Then this assembly language program will converted into machine language program (which is nothing but binary language program).
+
+<img width="69" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f6abdac5-4683-4d23-8b0e-2ad08adad02e">
+
+Then this binary program will executed in layout. Now layout will give output.
+Another interface that can be required between RISC-V and layout is Hardware discription language interface. we need to create RISC-V specifications using some RTL like this Picorv32 module,
+
+<img width="404" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/23e462a6-6561-4293-a552-5f40e8b25452">
+
+So, complete flow is like RISC-V architecture --> Implementation using HDL --> Layout
+
+
+
+
+
+
