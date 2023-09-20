@@ -2,15 +2,15 @@
 # Contents 
  <div class="toc">
   <ul>
-    <li><a href="#header-1">Day 1 - Inception of open-source EDA, OpenLANE and sky130 PDK</a></li>
+    <li><a href="#header-1">Day 1 - Introduction to RISC-V ISA and GNU compiler toolchain </a></li>
 	<ul>
-        <li><a href="#header-1_1"> How to talk to computers</a></li>
+        <li><a href="#header-1_1"> Introduction to RISC-V basic keyword </a></li>
       </ul>
       <ul>
-        <li><a href="#header-1_2">Soc design and OpenLANE</a></li>
+        <li><a href="#header-1_2"> Labwork for RISC_V software toolchain </a></li>
       </ul>
 	<ul>
-        <li><a href="#header-1_3">Get familiar to open-source EDA tools</a></li>
+        <li><a href="#header-1_3">Integer number representation</a></li>
       </ul>
    </div>
      
