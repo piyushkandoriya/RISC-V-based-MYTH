@@ -28,7 +28,7 @@
     + [Lab work using ABI function calls](#Lab-work-usin-ABI-function-calls)
       - [Study new algorithm for sum of 1 to N using ASM.](#Study-new-algorithm-for-sum-of-1-to-N-using-ASM.)
       - [Review ASM function call](#Review-ASM-function-call)
-      - [Simulate new C program with function call](#Simulate-new-C-program-with-function call)
+      - [Simulate new C program with function call](#Simulate-new-C-program-with-function-call)
 
     + [Basic verification flow using iverilog](#Basic-verification-flow-using-iverilog)
       - [Lab to run C- program using RISC_V CPU](#Lab-to-run-C--program-using-RISC_V-CPU)
