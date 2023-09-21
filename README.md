@@ -433,3 +433,82 @@ So, conclusion is we can run the program in RISC_V also by just passing the valu
 
 ## <h2 id="header-2_3">Basic verification flow using iverilog</h2>
 ### Lab to run C- program using RISC_V CPU
+Till now we run the direct C-program, we run C-program with ASM function call. But these are the simulations only.
+Now we will see, how we can run the same C-program on RISC_V CPU.
+
+<img width="403" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/7807eef8-61b2-411c-8c1c-60a984756b19">
+
+As we can see here, first we will convert our C program into Hex formate and the we will store it into memory. Then we will load this memory containt into RISC_V CPU (which is written in verilog). Then we run the testbench according to our input and then we display the output of these RISC_V CPU.
+
+Now in lab first we download some basic labs by "git clone". Command for this is "git clone https://github.com/kunalg123/riscv_workshop_collaterals.git".
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/454e9b47-0c4f-45fe-b08d-636d540e919a">
+
+Now we can see the bunch of files in the "riscv_workshop_collaterals" file. 
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/d1a28c51-8b66-4dca-80c5-1d221aa4c45d">
+
+We will goes into the "labs" file. In this file we can see one of the RISC_V CPU "picorv32.v".(as we mention, CPU is written in verilog. so extention is ".v"). 
+
+<img width="953" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/409c9bd9-cd4c-4e88-9f89-4bb3e54b8d80">
+
+Now if we open this CPU (picorv32.v) by command "vim picorv32.v", we can see the verilog file of this CPU.
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/89ce93b3-ee84-4b5c-8c6a-620ef5709918">
+
+Now let's see the testbench for this verilog code by command "vim testbench.v".
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/70494b1f-e248-4984-b356-55b135d0baa9">
+
+Here by this testbench, we load our hex file of C-program (which is available into memory) into CPU.
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b4dec654-ccb0-4b9d-8dc6-c92f0263e203">
+
+Now let's see the script or command, which are required to convert c-program into hex file. for that open the "rv32im.sh" by command "vim rv32im.sh".
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/e41b56c4-7252-4c2a-802c-26cfb2cf8ce5">
+
+Here we can see the many commands which will convert these C file and Assembly language file into hex file. So at the end we get ".hex" file.
+Then we use the tool "iverilog" and input of this tool is "testbench.v" and "picorv32.v". and this tool will generate "testbench.vvp" file. 
+And finally we will simulate the activity contain by "testbench.vvp" file by command "vvp -N testbench.vvp".
+
+Now let's run these command to generate ".hex" file by using the command "chmod 777 rv32im.sh" and press "enter" and again type command "./rv32im.sh". now whole command will run.
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/bdc060ce-9c1b-4887-987d-5c50efc7ed0c">
+
+here, Our Cprograme and assably code is for only 1 to 2, so we get sum = 3 here.
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/139e0b51-17fa-415a-97a5-acee0124bb4e">
+
+
+Now lets change the c program for bigger number i.e., 3. by command "vim 1to9_custom.c". (to edit this vim file: after open the vim file, we have to press i for start the insert mode end then we have to press "Esc,:,w" to save the changes and then we can exit from vim file by "Esc,:,q").
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ecff2ad2-6c85-4a4f-9dd9-0ef8735c698a">
+
+
+Now if we run once again by commands "chmod 777 rv32im.sh" and press "enter" and again type command "./rv32im.sh". 
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/59b0e5f7-75ee-4dda-a72f-6cad28daaeb3">
+
+we can see the output is 6.
+
+After running these script or commands for creat the ".hex" file. we can see this hex file now.
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/2a3d5508-83ac-4174-86b7-7bdecd406ea2">
+
+let's open this hex file by command "vim firmware32.hex"
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/31b8d369-5b9a-4954-8150-25cf41beabeb">
+
+As we said, this will used by picorv32 module of cpu. to see that, open the testbench by "vim testbench.v"
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/eabfc7c2-8b5b-4acc-822a-61f1db4dc4eb">
+
+Now we will build the RISC_V CPU in transister level verilog from srecth in Day_3, Day_4 and Day_5.
+
+
+
+
+
+
+
