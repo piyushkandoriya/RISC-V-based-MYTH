@@ -34,65 +34,85 @@
       - [Lab to run C- program using RISC_V CPU](#Lab-to-run-C--program-using-RISC_V-CPU)
      
 
-  <div class="toc">
-  <ul>
-    <li><a href="#header-3">Day 3 - Digital Logic with TL-verilog and Makerchip</a></li>
-	<ul>
-        <li><a href="#header-3_1">Combinational logic in TL-verilog using Makerchip</a></li>
-      </ul>
-      <ul>
-        <li><a href="#header-3_2">Sequential Logic</a></li>
-      </ul>
-	<ul>
-        <li><a href="#header-3_3">Pipelined logic</a></li>
-           </ul>
-	<ul>
-	<li><a href="#header-3_4">Validity</a></li>
-	</ul>
-	  <ul>
-		  <li><a href="#header-3_5">Warm-up</a></li>
-	  </ul>
-   </div>
-	  
-<div class="toc">
-  <ul>
-    <li><a href="#header-4">Day 4 -Basic RISC-V CPU Micro-architecture</a></li>
-	<ul>
-        <li><a href="#header-4_1">Introduction to simple RISC-V Micro-architecture</a></li>
-      </ul>
-      <ul>
-        <li><a href="#header-4_2">Fetch and decode</a></li>
-      </ul>
-	<ul>
-        <li><a href="#header-4_3">RISC-V control logic</a></li>
-      </ul>
-</div>
-	
-<div class="toc">
-  <ul>
-    <li><a href="#header-5">Day 5 -Complete pipelined RISC-V CPU micro-architecture</a></li>
-	<ul>
-        <li><a href="#header-5_1">Pipelining the CPU</a></li>
-      </ul>
-      <ul>
-        <li><a href="#header-5_2">Solution to pipeline Hazards</a></li>
-      </ul>
-	<ul>
-        <li><a href="#header-5_3">Load/Store Instructions and completing RISC-V CPU</a></li>
-        </ul>
-</div>
-	
-<div class="toc">
-  <ul>
-    <li><a href="#header-6">References</a></li>
-  </ul>
-</div>
+* [Day 3 - Digital Logic with TL-verilog and Makerchip](#Day-3---Digital-Logic-with-TL-verilog-and-Makerchip)
+    + [Combinational logic in TL-verilog using Makerchip](#Combinational-logic-in-TL-verilog-using-Makerchip)
+      - [welcome](#welcome)
+      - [Introduction to logic gates](#Introduction-to-logic-gates)
+      - [Basic Mux implimentation and introduction to Makerchip](#Basic-Mux-implimentation-and-introduction-to-Makerchip)
+      - [Labs for combinational logic](#Labs-for-combinational-logic)
+  
+ 
+    + [Sequential logic](#Sequential-logic)
+      - [Introduction to sequential logic and Counter lab](#Introduction-to-sequential-logic-and-Counter-lab)
+      - [Sequential Calculator lab](#Sequential-Calculator-lab)
 
-<div class="toc">
-  <ul>
-    <li><a href="#header-7">Acknowledgement</a></li>
-  </ul>
-</div>
+    + [Pipelined logic](#Pipelined-logic)
+      - [Pipelined logic and Retiming](#Pipelined-logic-and-Retiming)
+      - [Pipeline logic advantages and Demo in plateform](#Pipeline-logic-advantages-and-Demo-in-plateform)
+      - [Lab on error conditions within computation pipeline](#Lab-on-error-conditions-within-computation-pipeline)
+      - [Lab on 2-Cycle Calculator](#Lab-on-2--Cycle-Calculator)
+
+    + [Validity](#Validity)
+      - [Introduction to Validity and it's advantages](#Introduction-to-Validity-and-it's-advantages)
+      - [Lab on Validity and valid when condition](#Lab-on-Validity-and-valid-when-condition)
+      - [Lab to commpute total distance](#Lab-to-commpute-total-distance)
+      - [Lab on 2-Cycle Calculator with validity](#Lab-on-2--Cycle-Calculator)
+      - [Calculator Singal value Memory lab](#Calculator-Singal-value-Memory-lab)
+
+    + [Wrap up](#Wrap-up)
+      - [Introduction to Hierarchy concept](#Introduction-to-Hierarchy-concept)
+      - [Day_3 closer](#Day_3-closer)
+
+  * [Day 4 -Basic RISC-V CPU Micro-architecture](#Day-4--Basic-RISC-V-CPU-Micro-architecture)
+    + [Introduction to simple RISC-V Micro-architecture](#Introduction-to-simple-RISC-V-Micro-architecture)
+      - [Micro-architecture of single cycle RISC-V CPU](#Micro-architecture-of-single-cycle-RISC-V-CPU)
+      - [Starting point code for RISC-V labs part-1](#Starting-point-code-for-RISC-V-labs-part-1)
+      - [Starting point code for RISC-V labs part-2](#Starting-point-code-for-RISC-V-labs-part-2)
+      
+    + [Fetch and decode](#Fetch-and-Decode)
+      - [Implementation plan and lab for PC](#Implementation-plan-and-lab-for-PC)
+      - [Labs for intruction Fetch logic](#Labs-for-intruction-Fetch-logic)
+      - [Lab for RV instruction Types IRSBJU decode logic](#Lab-for-RV-instruction-Types-IRSBJU-decode-logic)
+      - [Lab for instruction immediate decode logic for RV-ISBUJ](#Lab-for-instruction-immediate-decode-logic-for-RV-ISBUJ)
+      - [Labs to decode other fields of instruction for RV-ISBUJ](#Labs-to-decode-other-fields-of-instruction-for-RV-ISBUJ)
+      - [Labs to decode instruction field based on Instr type RV-ISBUJ](#Labs-to-decode-instruction-field-based-on-Instr-type-RV-ISBUJ)
+      - [Labs to decode individual instruction](#Labs-to-decode-individual-instruction)
+        
+    + [RISC-V control logic](#RISC-V-control-logic)
+      - [Lab for register file read part-1(USE UPDATED SHELL CODE)](#Lab-for-register-file-read-part-1(USE-UPDATED-SHELL-CODE))
+      - [Lab for register file read part-2](#Lab-for-register-file-read-part-2)
+      - [Lab for ALU operations for add/addi](#Lab-for-ALU-operations-for-add/addi)
+      - [Lab for register file write](#Lab-for-register-file-write)
+      - [Concept of Array and Register file details](#Concept-of-Array-and-Register-file-details)
+      - [Labs for Implementing branch instructions](#Labs-for-Implementin-branch-instructions)
+      - [Labs for complementing branch instructions implementaion](#Labs-for-complementing-branch-instructions-implementaion)
+      - [Lab to create simple Testbench](#Lab-to-create-simple-Testbench)
+
+   * [Day 5 -Complete pipelined RISC-V CPU micro-architecture](#Day-5--Complete-pipelined-RISC-V-CPU-micro-architecture)
+    + [Pipelining the CPU](#Pipelining-the-CPU)
+      - [Introduction to Control flow Hazard and Read after write Hazard](#Introduction-to-Control-flow-Hazard-and-Read-after-write-Hazard)
+      - [Lab to create 3-Cycle valid signal](#Lab-to-create-3-Cycle-valid-signal)
+      - [Lab to code 3-Cycle RISC-V to take care of invalid Cycles](#Lab-to-code-3-Cycle-RISC-V-to-take-care-of-invalid-Cycles)
+      - [Lab to modify 3-Cycle RISC-V to distribute logic](#Lab-to-modify-3-Cycle-RISC-V-to-distribute-logic)
+      
+    + [Solution to pipeline Hazards](#Solution-to-pipeline-Hazards)
+      - [Lab for register file bypass to address Rd-After-Wr Hazard](#Lab-for-register-file-bypass-to-address-Rd-After-Wr-Hazard)
+      - [Lab for branches to correct the branch target path](#Lab-for-branches-to-correct-the-branch-target-path)
+      - [Lab to complete instruction decode except Fence,Ecell,Ebreak](#Lab-to-complete-instruction-decode-except-Fence,Ecell,Ebreak)
+      - [Lab to code complete ALU](#La-to-code-complete-ALU)
+        
+    + [Load/Store Instructions and completing RISC-V CPU](#Load/Store-Instructions-and-completing-RISC-V-CPU)
+      - [Intriduction to load/store instruction and lab to Redirect loads](#Intriduction-to-load/store-instruction-and-lab-to-Redirect-loads)
+      - [Lab to load data from memory to register file](#Lab-to-load-data-from-memory-to-register-file)
+      - [Lab to instantiate data memory to register file](#Lab-to-instantiate-data-memory-to-register-file)
+      - [Lab for add, stores and load to the test program](#Lab-for-add,-stores-and-load-to-the-test-program)
+      - [Lab to add control logic for jump instruction](#Lab-to-add-control-logic-for-jump-instruction)
+      - [Wrap up](#Wrap up)
+    
+ * [References](#References)
+   
+ * [Acknowledgement](#Acknowledgement)
+    
 
 # Day 1 -Introduction to RISC-V ISA(instruction set architecture) and GNU compiler toolchain	 
 ## Introduction to RISC-V basic keywords
@@ -515,7 +535,9 @@ Now we will build the RISC_V CPU in transister level verilog from srecth in Day_
 
 
 
-
+# Day 3 - Digital Logic with TL-verilog and Makerchip
+## Combinational logic in TL-verilog using Makerchip
+### welcome
 
 
 
