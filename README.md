@@ -224,6 +224,38 @@ Lets run same program in the other compiler -Ofast instead of -O1 by command "ri
 
 Now here, Adress of "main" is 100b0 and other instructions were given below ara at 100b4,100b8 etc. so here also memory is byte addressable (4 byte for 1 instruction. so instruction is 32bit instruction). Total 26 instruction came out of "Ofast" compiler.
 
+### Spike Simulation and Debug
+what we get at output by using compiler gcc, same thing we will get by using this "riscv-unknown-elf-gcc -Ofast -mabi=lp64 -march=rv64i -o Sum1toN.o Sum1toN.c" compiler
+For that command is "spike pk Sum1toN.o".
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f718810e-18dc-4267-bac4-b8646e69d530">
+
+Here also we get sum=15 for N=5 and sum=5050 for N=100. means our simulation is correct.
+Now let's debug the instructions by the command "spike -d pk Sum1toN.o".
+Now first we run all the instruction up to "main" and move our program counter at the address of 100b0 by command "untill pc 0 100b0"
+
+Now before executing next instruction let's find the value in register "a0" by command "reg 0 a0"
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/7ef8235a-3cba-457e-9b7b-c72edc19fc4a">
+
+
+Here we can clearly see that, upto now value of register a0=1.
+
+Now executing the next instruction by just pressing enter". and again check the value of register a0 now.
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f930246c-b5f8-4803-b934-33554c0e5573">
+
+Now the value of Register a0 is 2b000.
+Here instruction "lui" means load upper immediate. so here also immediate bit 64-12 are filled with 0b which is followed by "lui ao 0×2b".
+
+Now again when we press enter, next instruction will exicuted which is "addi sp, sp, -32". this instruction means stack pointer will updated by sp=sp-32.
+So before exicuting this let's see the value of Stack pointer (sp) first. Sp have value of "3ffffffb50".then we check the change in sp.
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/15391d9d-9585-45a0-87e9-a8fdce0476e0">
+
+Now sp have value of "3ffffffb50". Here we can see that SP is reduced by 32 because (20)h=(32)10.
+
+
 
 
 
