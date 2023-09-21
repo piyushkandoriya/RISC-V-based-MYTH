@@ -5,6 +5,7 @@
 
 * [Day 1 -Introduction to RISC-V ISA and GNU compiler toolchain](#Day-1-Introductionto-RISC-V-ISA(instruction-set-architecture)-and-GNU-compiler-toolchain)
     + [Introduction to RISC-V basic Keywords](#Introduction-to-RISC-V-basic-keywords)
+      -[introduction](#introduction)
     + [Labwork for RISC_V software toolchain](#Labwork-for-RISC-V-software-toolchain)
     + [Integer number representation](#Integer-number-representation)
  
