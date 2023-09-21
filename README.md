@@ -287,9 +287,82 @@ if MSB=1 then Number is Nagative. So we have to convert in to 2's complement to 
 For more understandin, let's take an example of (+2) and (-2).
 
 <img width="517" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b4d2fc75-9000-45eb-9a92-9669caf8ce50">
-
+ca
 The rang that can be represented as signed number by RV64 is: -(2^63) to [(2^63)-1].
 
 ### Lab for Signed and Unsigned Numbers
 
 
+
+
+# <h2 id="header-2">Day 2 -Introductio to ABI and Basic verification flow</h2>	 
+## <h2 id="header-2_1">Application Binary Interface</h2>
+### Introduction to Application Binary Interface
+For computers, the interface for the users is the just appearence and functionality.
+
+<img width="449" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/c9764b7a-6910-4b4b-8c33-2f93f604fcda">
+
+Similar way if we looking at any application like Email, if we want to run the program of email application in Hardware, there are multiple layers which are present at each and every stage of program. from that layers, One of the layer is ABI (application binary interface).
+
+When we write the program, we use some standerd libraries. so, between lybraries and application program, there is an interface is available. which is called API (application programing interface). similarly other interfaces also available like ISA, RTL etc. ISA is accesable to O.S. and User directly. so some part of ISA called "User ISA" and "User and System ISA".
+
+<img width="529" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/3b1c2c16-4524-474e-83a0-6a8e39cb1066">
+
+User directly access the registers vai system calls. By using the interface, user access registers via system calles is called ABI (application binary interface). It is also called "system call interface".
+
+<img width="515" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/987c12dd-bd8d-415f-b2f1-e3dbab27be59">
+
+In RISC-V, there are 32 registers are available.
+
+### Memory allocation for Double word
+#### Why only 32 registers in RISC-V architecture?
+Two ways to load the data in registers. (i) Direct loading in register (ii) Taking data from memory and the loading to register
+
+<img width="536" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/dd264b08-245b-4cb2-8b32-53aa7573f594">
+
+If the address of first doubleword is M[0] then adderess of second doubleword is M[8] and adress of third doubleword is M[16]
+
+<img width="529" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/27e33499-d447-4f0b-a9e5-9c6a16c54e4a">
+
+### Load, Add and Store instructions with example
+Let's take an example of array which holds 3 doublewords. means it will strord from 0-7,8-15,16-23 memory locations.
+
+<img width="526" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/a8c6f846-9907-490f-8bad-5d066410197f">
+
+What we need is, we need to store this content of array's 3rd doubleword (16-23) in register (X8).
+For that first we need to store the location of first memory address where first byte of first word is stored. so lets take register "x23" contains the adreess of first memory location.
+
+Now to load the data of 3rd doubleword, we have to give command "ld x3, 16(X23)". where ld= load doubleword, 16(x23) means stake pointer will move to adress of (x23 address + 16).
+
+<img width="539" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/cf8315c2-083e-4d32-8c8e-5e3badb1407c">
+
+Let's see how it instructions looks like,
+
+<img width="452" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/636c6198-69bc-4100-a6c6-a1423c3e392f">
+
+#### NOte
+Data in RISC-V is 64 bit in size but instruction size is 32 bit.
+
+Other instruction is "add x8,x24,x8" means we add the value of register x23 into x8. let's see how it is looks like,
+
+<img width="427" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/d20c7925-10ae-4e87-9637-326ac0484198">
+
+Other instruction is "sd x8,8(x23)". Here sd means store doubleword. here we are are storing the value of x8 register frpm memory M[8] to M[15] because 8(x23) means memory address contain by x23 + 8= M[8]. let's see how it is looks like,
+
+<img width="454" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/88317401-29ee-4076-bd20-0e1c8b085364">
+
+### Concluding 32-Registers and Their respective ABI names 
+ld,add,sd are base integer istructions in RV64I. under these, add is called R-type instruction because it is implemented on register only. similarly, ld is called i-type instrtuction where imedeate bits are use for perform the operaration and sd is called S-type instruction here sourse register is used.
+
+<img width="467" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/17b2b3b1-9fd5-411f-b9b3-5be252567499">
+
+All the registers address in intructions is only 5 bit. so total 32 registers we required in RISC-V aarchitecture.
+
+<img width="528" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/a50c96e5-5ae2-4ab2-b825-3d94d353004c">
+
+In assembly language, we use these ABI name to call these registers.
+
+<img width="530" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/d4eac350-0914-4b87-acab-dab89b97c691">
+
+## <h2 id="header-2_2">Lab work using ABI function calls</h2>
+### Study new algorithm for sum of 1 to N using ASM.
