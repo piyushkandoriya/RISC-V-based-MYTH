@@ -314,7 +314,26 @@ Now after run this program by command "gcc UnsignedHighest.c". Now if we open th
 
 This is the highest number represent by "doubleword" or "unsined long long int". To check it, if we change in the code "64" to 66 then also we get the same value 18,446,744,073,709,551,615 because doubleword can not contain more than this value.
 
+If we try to represend nagative number by "unsigned long long int" then it will show "0" because it will goes only up to 0. for that let's change "(pow(2,64)-1)" to "((pow(2,64)-1)*-1). 
 
+<img width="959" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ce1f3f8c-fe7a-40d4-8d14-4f54a23537fa">
+
+we can see the result is 0. Hence it proven that we can not represent nagative number by "unsinged long long int".
+
+Now how to represent nagative number. For that Let's write simple program for Highest signed integer in C. let's create file signedHighest.c using command "leafpad signedHighest.c &".
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/7e0461f9-cd9e-4802-9e78-1b7b07917d23">
+
+Here, we can not use normal "int" to declare Max. To declare doubleword we have to use "long long int". and we have to use formate spacifier "%lld" instead of "%llu".
+Now after run this program by command "riscv64-unknown-elf-gcc -Ofast -mabi=lp64 -march=rv64i -o SignedHighest.o SignedHighest.c". Now if we open the output file by command "spike pk SignedHighest.o", we can see the maximum unsigned number represent by doubleword is =9223372036854775807
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/4cd1f19b-5dd1-46e2-8c6d-8f38730587cc">
+
+Now to find lowest number, we have to change (pow(2,63)-1) to (pow(2,63)*-1).
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/e82d0d8a-b63e-4102-9996-e2ecda789ea2">
+
+Here we can see the negative highest number represent by doubleword is= -9223372036854775807
 
 # <h2 id="header-2">Day 2 -Introductio to ABI and Basic verification flow</h2>	 
 ## <h2 id="header-2_1">Application Binary Interface</h2>
