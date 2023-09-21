@@ -388,3 +388,8 @@ Algorithm of this program will looks like this given below,
 <img width="354" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/4d3698de-4688-4937-a6a2-db8230274d06">
 
 ### Review ASM function call
+Till now we have algorithm. now let's look into the real main c-program and assembly language program for this algorrithm.
+
+<img width="772" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f2ff61f9-b68a-4ed3-8d2d-235404473bf3">
+
+Here, "extern" keyword informs the compiler that the function "load" is declared in this source file but defined in another source file or library. It's a way of indicating that the actual function implementation exists externally.
