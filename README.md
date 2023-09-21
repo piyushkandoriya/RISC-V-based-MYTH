@@ -410,3 +410,20 @@ Till now we have algorithm. now let's look into the real main c-program and asse
 Here, "extern" keyword informs the compiler that the function "load" is declared in this ISA. It's a way of indicating that the actual function implementation exists externally.
 By using load we will pass (0x0, count+1) number to assambly language program. Then it will goes into function and return into the result.
 
+Now let's creat "load.S" file like this.
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/abb74298-0dc5-4aa5-866f-46984f42777d">
+
+Here we declare this function "load". 
+
+If we see in the algorithm, c program pass the value of 0 and 10 by register a0 and a1. These values of a0 and a1 are now move to a4 and a2 register. And initialize the a3 register with 0. These process we write into assambly language by command "add a4, a0, zero", "add a2, a0, a1" , "add a3, a0, zero". 
+
+Now as per the loop also we write a program. like these we define the "load" function in "load.S" file.
+
+
+### Simulate new C program with function call
+Let's we run the 1to9_custom.c program by command "riscv64-unknown-elf-gcc -Ofast -mabi=lp64 -march=rv64i -o 1to9_custom.o 1to9_custom.c load.S".
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/465e3c2b-0f05-4b44-a41a-12832ec1bc80">
+
+Here we can see the output is 45. So, conclusion is we can run the program in RISC_V also by just passing the value of interger by C-language. This is done by ABI(application binary interface) or (assembly function call).
