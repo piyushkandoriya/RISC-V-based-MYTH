@@ -26,7 +26,7 @@
       - [Concluding 32-Registers and Their respective ABI names](#Concluding-32--Registers-and-Their-respective-ABI-names)
  
     + [Lab work using ABI function calls](#Lab-work-usin-ABI-function-calls)
-      - [Study new algorithm for sum of 1 to N using ASM.](#Study-new-algorithm-for-sum-of-1-to-N-using-ASM.)
+      - [Study new algorithm for sum of 1 to N using ASM](#Study-new-algorithm-for-sum-of-1-to-N-using-ASM)
       - [Review ASM function call](#Review-ASM-function-call)
       - [Simulate new C program with function call](#Simulate-new-C-program-with-function-call)
 
@@ -63,7 +63,7 @@
       - [Introduction to Hierarchy concept](#Introduction-to-Hierarchy-concept)
       - [Day_3 closer](#Day_3-closer)
 
-  * [Day 4 -Basic RISC-V CPU Micro-architecture](#Day-4--Basic-RISC-V-CPU-Micro-architecture)
+ * [Day 4 -Basic RISC-V CPU Micro-architecture](#Day-4--Basic-RISC-V-CPU-Micro-architecture)
     + [Introduction to simple RISC-V Micro-architecture](#Introduction-to-simple-RISC-V-Micro-architecture)
       - [Micro-architecture of single cycle RISC-V CPU](#Micro-architecture-of-single-cycle-RISC-V-CPU)
       - [Starting point code for RISC-V labs part-1](#Starting-point-code-for-RISC-V-labs-part-1)
@@ -88,7 +88,7 @@
       - [Labs for complementing branch instructions implementaion](#Labs-for-complementing-branch-instructions-implementaion)
       - [Lab to create simple Testbench](#Lab-to-create-simple-Testbench)
 
-   * [Day 5 -Complete pipelined RISC-V CPU micro-architecture](#Day-5--Complete-pipelined-RISC-V-CPU-micro-architecture)
+* [Day 5 -Complete pipelined RISC-V CPU micro-architecture](#Day-5--Complete-pipelined-RISC-V-CPU-micro-architecture)
     + [Pipelining the CPU](#Pipelining-the-CPU)
       - [Introduction to Control flow Hazard and Read after write Hazard](#Introduction-to-Control-flow-Hazard-and-Read-after-write-Hazard)
       - [Lab to create 3-Cycle valid signal](#Lab-to-create-3-Cycle-valid-signal)
@@ -419,7 +419,7 @@ In assembly language, we use these ABI name to call these registers.
 <img width="530" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/d4eac350-0914-4b87-acab-dab89b97c691">
 
 ## Lab work using ABI function calls
-### Study new algorithm for sum of 1 to N using ASM.
+### Study new algorithm for sum of 1 to N using ASM
 Let's take an example of Sum 1 to N,
 
 <img width="288" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/5920ae39-74f7-47c9-bd92-341a872d5b4f">
