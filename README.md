@@ -107,7 +107,7 @@
       - [Lab to instantiate data memory to register file](#Lab-to-instantiate-data-memory-to-register-file)
       - [Lab for add, stores and load to the test program](#Lab-for-add,-stores-and-load-to-the-test-program)
       - [Lab to add control logic for jump instruction](#Lab-to-add-control-logic-for-jump-instruction)
-      - [Wrap up](#Wrap up)
+      - [Wrap up](#Wrap-up)
     
  * [References](#References)
    
