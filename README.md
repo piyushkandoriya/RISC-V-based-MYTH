@@ -255,13 +255,41 @@ So before exicuting this let's see the value of Stack pointer (sp) first. Sp hav
 
 Now sp have value of "3ffffffb50". Here we can see that SP is reduced by 32 because (20)h=(32)10.
 
+## <h1 id="header-1_3">Integer Number representation</h1>
+### 64-bit Number system for unsigned Numbers
+we need to understand, what kind of conversion happened when we convert any number from a decimal format to a binary format and how does the things are getting arranged and implemented by RISC-V implementation.
+So binary representation of signed of unsigned integer is relevantly very immportant.
+In the turms of RISC-V, entire 64 bit is called "doubleword". and 32-bit is called word.
+In the turms of RISC-V, 8-bit= 1 byte, 4-byte=1 word, 2-word=doubleword
 
+<img width="594" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/c17c69ec-f07f-4fd1-bacb-83132f017e40">
 
+Total number of pattern represented by RV64 is:2^64.
+Range of unsigned interger number in RV64 is: 0 to [(2^64)-1].
+The maximum sum of any unsigned number or maximum possible nnumber respresented in RV64 is :[1111111......1(64times)]binary = (18,446,744,073,709,551,615)decimal.
 
+<img width="527" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f4c69337-94e1-49b6-ae36-06bf06c984c1">
 
+After this decimal number, the overflow flag generate.
 
+### 64-bit Number system for signed Numbers
+Till now we see about positive Numbers. 
+How to represent the nagative numbers?
+To represent nagative number, we have to use 2's complement of positive number.
+In signed representation, MSB represent the sign of Number. i.e, if MSB=0 then Number is Positive. 
 
+<img width="517" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/0e9dd5cd-8d7d-4bf7-a663-b1ca37e1652e">
 
+if MSB=1 then Number is Nagative. So we have to convert in to 2's complement to get origional number.
 
+<img width="514" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/74edb62e-7800-4cb9-96ee-d36bc4195520">
+
+For more understandin, let's take an example of (+2) and (-2).
+
+<img width="517" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b4d2fc75-9000-45eb-9a92-9669caf8ce50">
+
+The rang that can be represented as signed number by RV64 is: -(2^63) to [(2^63)-1].
+
+### Lab for Signed and Unsigned Numbers
 
 
