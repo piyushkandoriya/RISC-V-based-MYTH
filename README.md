@@ -366,3 +366,13 @@ In assembly language, we use these ABI name to call these registers.
 
 ## <h2 id="header-2_2">Lab work using ABI function calls</h2>
 ### Study new algorithm for sum of 1 to N using ASM.
+Let's take an example of Sum 1 to N,
+
+<img width="288" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/5920ae39-74f7-47c9-bd92-341a872d5b4f">
+
+Here arguments passed using Registers a0 and a1 and get back return using a0.
+Algorithm of this program will looks like this given below,
+
+<img width="354" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/4d3698de-4688-4937-a6a2-db8230274d06">
+
+### Review ASM function call
