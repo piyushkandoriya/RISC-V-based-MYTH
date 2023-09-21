@@ -237,8 +237,8 @@ Lets run same program in the other compiler -Ofast instead of -O1 by command "ri
 Now here, Adress of "main" is 100b0 and other instructions were given below ara at 100b4,100b8 etc. so here also memory is byte addressable (4 byte for 1 instruction. so instruction is 32bit instruction). Total 26 instruction came out of "Ofast" compiler.
 
 ### Spike Simulation and Debug
-what we get at output by using compiler gcc, same thing we will get by using this "riscv-unknown-elf-gcc -Ofast -mabi=lp64 -march=rv64i -o Sum1toN.o Sum1toN.c" compiler
-For that command is "spike pk Sum1toN.o".
+what we get at output by using compiler gcc, same thing we will get by using this "riscv-unknown-elf-gcc -Ofast -mabi=lp64 -march=rv64i -o Sum1toN.o Sum1toN.c" compiler.
+For seeing output here, command is "spike pk Sum1toN.o".
 
 <img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f718810e-18dc-4267-bac4-b8646e69d530">
 
@@ -303,7 +303,16 @@ ca
 The rang that can be represented as signed number by RV64 is: -(2^63) to [(2^63)-1].
 
 ### Lab for Signed and Unsigned Numbers
+Let's write simple program for Highest unsigned integer in C.let's create file UnsignedHighest.c using command "leafpad UnsignedHighest.c &".
 
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/d8bfcf1a-a939-434b-b27c-de1ed03daab1">
+
+Here, we can not use normal "unsigned int" to declare Max. To declare double word we have to use "unsigned long long int".
+Now after run this program by command "gcc UnsignedHighest.c". Now if we open the output file by command "./a.out", we can see the maximum unsigned number represent by double word is =18,446,744,073,709,551,615
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/aa669cc3-cc2b-476c-b2f9-526b64aeaefb">
+
+This is the highest number represent by "doubleword" or "unsined long long int". To check it, if we change in the code "64" to 66 then also we get the same value 18,446,744,073,709,551,615 because doubleword can not contain more than this value.
 
 
 
@@ -392,4 +401,6 @@ Till now we have algorithm. now let's look into the real main c-program and asse
 
 <img width="772" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f2ff61f9-b68a-4ed3-8d2d-235404473bf3">
 
-Here, "extern" keyword informs the compiler that the function "load" is declared in this source file but defined in another source file or library. It's a way of indicating that the actual function implementation exists externally.
+Here, "extern" keyword informs the compiler that the function "load" is declared in this ISA. It's a way of indicating that the actual function implementation exists externally.
+By using load we will pass (0x0, count+1) number to assambly language program. Then it will goes into function and return into the result.
+
