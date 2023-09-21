@@ -1,32 +1,39 @@
 # **RISC-V-based-MYTH**
 # Contents 
 
-
-
 * [Day 1 -Introduction to RISC-V ISA and GNU compiler toolchain](#Day-1-Introductionto-RISC-V-ISA(instruction-set-architecture)-and-GNU-compiler-toolchain)
     + [Introduction to RISC-V basic Keywords](#Introduction-to-RISC-V-basic-keywords)
       - [introduction](#introduction)
+      - [From apps to Hardware](#From-Apps-to-Hardware)
+      - [Detailed discription](#Detailed-discription)
       
     + [Labwork for RISC_V software toolchain](#Labwork-for-RISC-V-software-toolchain)
+      - [C-Program to compute sum from 1 to N](#C-Program-to-compute-sum-from-1-to-N)
+      - [RISC-V GCC compile and Disassemble](#RISC-V-GCC-compile-and-Disassemble)
+      - [Spike Simulation and Debug](#Spike-Simulation-and-Debug)
+        
     + [Integer number representation](#Integer-number-representation)
- 
-      
-
+      - [64-bit Number system for unsigned Numbers](#64-bit-Number-system-for-unsigned-Numbers)
+      - [64-bit Number system for signed Numbers](#64-bit-Number-system-for-signed-Numbers)
+      - [Lab for Signed and Unsigned Numbers](#Lab-for-Signed-and-Unsigned-Numbers)
      
-<div class="toc">
-  <ul>
-    <li><a href="#header-2">Day 2 - Introduction to ABI and basic verification flow</a></li>
-	<ul>
-        <li><a href="#header-2_1">Application Binary interface (ABI)</a></li>
-      </ul>
-      <ul>
-        <li><a href="#header-2_2">Labwork using ABI function calls</a></li>
-      </ul>
-	<ul>
-        <li><a href="#header-2_3">Basic verification flow using iverilog</a></li>
-      </ul>
-</div>
-  
+ 
+* [Day 2 -Introductio to ABI and Basic verification flow](#Day-2--Introductio-to-ABI-and-Basic-verification-flow)
+    + [Application Binary Interface](#Application-Binary-Interface)
+      - [Introduction to Application Binary Interface](#Introduction-to-Application-Binary-Interface)
+      - [Memory allocation for Double word](#Memory-allocation-for-Double-word)
+      - [Load, Add and Store instructions with example](#Load,-Add-and-Store-instructions-with-example)
+      - [Concluding 32-Registers and Their respective ABI names](#Concluding-32--Registers-and-Their-respective-ABI-names)
+ 
+    + [Lab work using ABI function calls](#Lab-work-usin-ABI-function-calls)
+      - [Study new algorithm for sum of 1 to N using ASM.](#Study-new-algorithm-for-sum-of-1-to-N-using-ASM.)
+      - [Review ASM function call](#Review-ASM-function-call)
+      - [Simulate new C program with function call](#Simulate-new-C-program-with-function call)
+
+    + [Basic verification flow using iverilog](#Basic-verification-flow-using-iverilog)
+      - [Lab to run C- program using RISC_V CPU](#Lab-to-run-C--program-using-RISC_V-CPU)
+     
+
   <div class="toc">
   <ul>
     <li><a href="#header-3">Day 3 - Digital Logic with TL-verilog and Makerchip</a></li>
@@ -116,7 +123,7 @@ Another interface that can be required between RISC-V and layout is Hardware dis
 
 So, complete flow is like RISC-V architecture --> Implementation using HDL --> Layout
 
-### From App to Hardware
+### From Apps to Hardware
 #### How Apps run on Hardware?
 By example of Stop watch App, we understand this.
 
@@ -322,8 +329,8 @@ Now to find lowest number, we have to change (pow(2,63)-1) to (pow(2,63)*-1).
 
 Here we can see the negative highest number represent by doubleword is= -9223372036854775807
 
-# <h2 id="header-2">Day 2 -Introductio to ABI and Basic verification flow</h2>	 
-## <h2 id="header-2_1">Application Binary Interface</h2>
+# Day 2 -Introductio to ABI and Basic verification flow	 
+## Application Binary Interface
 ### Introduction to Application Binary Interface
 For computers, the interface for the users is the just appearence and functionality.
 
@@ -391,7 +398,7 @@ In assembly language, we use these ABI name to call these registers.
 
 <img width="530" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/d4eac350-0914-4b87-acab-dab89b97c691">
 
-## <h2 id="header-2_2">Lab work using ABI function calls</h2>
+## Lab work using ABI function calls
 ### Study new algorithm for sum of 1 to N using ASM.
 Let's take an example of Sum 1 to N,
 
@@ -431,7 +438,7 @@ Here we can see the output is 45.
 So, conclusion is we can run the program in RISC_V also by just passing the value of interger by C-language. This is done by ABI(application binary interface) or (assembly function call).
 
 
-## <h2 id="header-2_3">Basic verification flow using iverilog</h2>
+## Basic verification flow using iverilog
 ### Lab to run C- program using RISC_V CPU
 Till now we run the direct C-program, we run C-program with ASM function call. But these are the simulations only.
 Now we will see, how we can run the same C-program on RISC_V CPU.
