@@ -3,25 +3,13 @@
 
 
 
-* [Day 1: Introduction to RISC-V ISA and GNU compiler toolchain](#day-1)
+* [Day 1 -Introduction to RISC-V ISA and GNU compiler toolchain](#Day-1-Introductionto-RISC-V-ISA(instruction-set-architecture)-and-GNU-compiler-toolchain)
     + [Introduction to RISC-V basic Keywords](#Introduction-to-RISC-V-basic-keywords)
-    + [Lab of compile and execute the C code in the RISC-V gnu toolchain](#Lab-of-compile-and-execute-the-C-code-in-the-RISC-V-gnu-toolchain)
-    + [Lab of signed and unsigned arithmetic operations](#Lab-of-signed-and-unsigned-arithmetic-operations)
+    + [Labwork for RISC_V software toolchain](#Labwork-for-RISC-V-software-toolchain)
+    + [Integer number representation](#Integer-number-representation)
  
       
- <div class="toc">
-  <ul>
-    <li><a href="#header-1">Day 1 - Introduction to RISC-V ISA and GNU compiler toolchain </a></li>
-	<ul>
-        <li><a href="#header-1_1">Introduction to RISC-V basic keyword</a></li>
-      </ul>
-      <ul>
-        <li><a href="#header-1_2">Labwork for RISC_V software toolchain</a></li>
-      </ul>
-	<ul>
-        <li><a href="#header-1_3">Integer number representation</a></li>
-      </ul>
-   </div>
+
      
 <div class="toc">
   <ul>
@@ -97,11 +85,8 @@
   </ul>
 </div>
 
-## Day 1 
-
-## Introduction to RISC-V basic Keywords
-# <h1 id="header-1">Day 1 -Introduction to RISC-V ISA(instruction set architecture) and GNU compiler toolchain</h1>	 
-## <h1 id="header-1_1">Introduction to RISC-V basic keyword</h1>
+# Day 1 -Introduction to RISC-V ISA(instruction set architecture) and GNU compiler toolchain	 
+## Introduction to RISC-V basic keywords
 ### Introduction
 ISA (Instruction Set Architecture) is nothing but language of the computer in which we are giving some command to the computer.
 
@@ -199,7 +184,7 @@ By some instructions, some memory transfer heppend. so these instructions are ca
 
 <img width="533" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/2eedbbcb-94cc-4f78-a69e-8cba1676a027">
 
-## <h1 id="header-1_2">Labwork for RISC_V software toolchain</h1>
+## Labwork for RISC V software toolchain
 ### C-Program to compute sum from 1 to N
 C-program for sum of 1 to N is,
 
@@ -267,7 +252,7 @@ So before exicuting this let's see the value of Stack pointer (sp) first. Sp hav
 
 Now sp have value of "3ffffffb50". Here we can see that SP is reduced by 32 because (20)h=(32)10.
 
-## <h1 id="header-1_3">Integer Number representation</h1>
+## Integer Number representation
 ### 64-bit Number system for unsigned Numbers
 we need to understand, what kind of conversion happened when we convert any number from a decimal format to a binary format and how does the things are getting arranged and implemented by RISC-V implementation.
 So binary representation of signed of unsigned integer is relevantly very immportant.
