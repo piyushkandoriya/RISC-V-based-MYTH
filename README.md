@@ -642,6 +642,6 @@ waveform and design block for calculator is,
 
 <img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ca7d0d40-b1c2-4b46-823a-ac5daa5b3737">
 
-
+Link of combinational calculator : ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0GZhl8#```
 
 
