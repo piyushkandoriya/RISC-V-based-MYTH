@@ -579,7 +579,15 @@ Regarding TL-verilog
 <img width="280" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/0b44497d-bbca-407f-8d0b-c871b98f3562">
 
 #### Task (1): Writing the inverter code in macker chip
+Link for inverter: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0pghJq```
 
+Tl verilog code for inverter is given below,
+
+```
+$reset = *reset;
+   
+   $out = !$in ;
+```
 <img width="479" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ae6405ed-cba2-4700-9dd4-e0a0a11c88cf">
 
 Now after compiling, we can see the diagram and waveform of Inverter
@@ -590,7 +598,10 @@ Now after compiling, we can see the diagram and waveform of Inverter
 
 <img width="478" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/01cc1e65-7e5a-4249-9393-d185d764db61">
 
+
+
 <img width="545" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/2b83e607-5a8a-4d2d-9ac6-325cc719581f">
+
 
 Here in waveform we can see the sum of in1 and in2 at out
 
@@ -598,15 +609,21 @@ Here in waveform we can see the sum of in1 and in2 at out
 
 <img width="479" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/4386e918-9bca-4d1d-8b40-46ace83a526d">
 
+
 Here, we are ttaking input is 8 bit
 
+
 <img width="475" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/3e7470df-e6c5-4adc-aeeb-1e8e0f610117">
+
+
 
 <img width="479" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/7acf84c2-3f54-40f1-a97c-6daddfcaeb0d">
 
 Here we can see that when sel is 1 out= in1 and when sel is 0, out=in0.
 
 #### Task (4): write a program for combinational calculator
+Link of combinational calculator : ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0GZhl8#```
+
 
 <img width="315" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/29bcce74-94dc-490c-bdbe-b2ca9312dc94">
 
@@ -638,10 +655,13 @@ Tl verilog Code for calculator is given below,
 
 <img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f406860f-024b-4233-ba66-2a659f5c679e">
 
+
+
 waveform and design block for calculator is,
+
 
 <img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ca7d0d40-b1c2-4b46-823a-ac5daa5b3737">
 
-Link of combinational calculator : ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0GZhl8#```
+
 
 
