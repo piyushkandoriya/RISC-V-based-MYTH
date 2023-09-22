@@ -851,6 +851,19 @@ By using ```>>4$aa[31:0]``` we can use value of "clock 0 aa" at "clock 4 aa"
 
 
 ### Lab on error conditions within computation pipeline
+#### Identifier and Types in TL verilog
+Types of identifier is determined by simbol prefix and case/delimitation style. like given below
 
+<img width="154" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b79e4904-1a31-482a-b2f1-78a19f41f928">
 
+The first token should be start by 2 small alphabets and then we can use any other number or alphabet.
 
+<img width="263" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/967760e6-c15f-4fe3-9e94-2ce807fe0ce0">
+
+#### Errors
+
+<img width="544" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/1f37bd63-59f1-4e36-b279-1baf5badecc6">
+
+Red circle is for ```unassigned input``` and blue circle for ```ORs``` (ORs means we give two or more error condition at a same time in one block).
+
+### Lab on 2-Cycle Calculator
