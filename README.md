@@ -762,7 +762,7 @@ TL verilog code for sequential calculator is given below,
 $reset = *reset;
    
    $val1[31:0] = $rand1[3:0];
-   $val2[31:0] = $reser ? 0 : (>>1$out[31:0]);
+   $val2[31:0] = $reset ? 0 : (>>1$out[31:0]);
    $op[1:0] = $rand3[1:0];
    
    $sum[31:0] = $val1[31:0] + $val2[31:0];
@@ -867,3 +867,81 @@ The first token should be start by 2 small alphabets and then we can use any oth
 Red circle is for ```unassigned input``` and blue circle for ```ORs``` (ORs means we give two or more error condition at a same time in one block).
 
 ### Lab on 2-Cycle Calculator
+#### Task(1): Counter and calculator together in pipeline at 1 stage
+Link of Counter and calculator together in pipeline at one stage: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0Q1hpE```
+
+<img width="300" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/1c81c16b-0787-4ed7-b5f4-cdff1b4a5227">
+
+Here we can see the counter and calculator are together at stage @1 in "|calc".
+
+TL verilog code for Counter and calculator together in pipeline is given below,
+```
+$reset = *reset;
+   
+   |calc
+      @1
+         $reset = *reset;
+   
+         $val1[31:0] = $rand1[3:0];
+         $val2[31:0] = $reset ? 0 : (>>1$out[31:0]);
+         $op[1:0] = $rand3[1:0];
+   
+         $sum[31:0] = $val1[31:0] + $val2[31:0];
+         $diff[31:0] = $val1[31:0] - $val2[31:0];
+         $prod[31:0] = $val1[31:0] * $val2[31:0];
+         $qout[31:0] = $val1[31:0] / $val2[31:0];
+   
+         $out[31:0] = ($op[1:0] == 2'b00) ? $sum[31:0] : (($op[1:0] == 2'b01) ? $diff[31:0] : (($op[1:0] == 2'b10) ? $prod[31:0] : (($op[1:0] == 2'b11) ? $qout[31:0] : 32'b0)));
+      
+         $count[31:0] = $reset ? 0 : (>>1$count+1);
+```
+
+code and output of macker chip,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/615dbb93-69a3-4384-b1bd-dc6f00f4c6a0">
+
+#### Task(2): 2-cycle calculator
+Link of 2-cycle calculator: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0Vmh6l```
+
+<img width="305" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/00021cb4-8ef9-4a66-accf-6210b1cbb90a">
+
+Here we can see the 2 stages of calculator to operate it at high frequency and we made some changes in calculator allignment also.
+
+Due to 2 stages, output after 2 stage should be going back to operand.
+
+We change counter to single bit counter to indicate every clock cycle.(it will toggle between 0 and 1 at every clock cycle)
+
+we are connecting ```$valid``` to remove or clear alternate output. means when invalide cycle will come it will reset the mux.
+
+TL code for 2-cycle calculator is given below,
+```
+`include"sqrt32.v"
+\TLV
+   
+   |calc
+      @1
+         $reset = *reset;
+         
+         $val1[31:0] = $ran1[3:0];
+         $val2[31:0] = $reset ? 0 : (>>2$out[31:0]);
+         $op[1:0] = $rand3[1:0];
+         
+         $sum[31:0] = $val1[31:0] + $val2[31:0];
+         $diff[31:0] = $val1[31:0] - $val2[31:0];
+         $prod[31:0] = $val1[31:0] * $val2[31:0];
+         $qout[31:0] = $val1[31:0] / $val2[31:0];
+         $valid = $reset ? 32'b0 : (>>1$valid + 1);
+      @2
+         $out[31:0] = ($reset | (!$valid)) ? 32'h0 : (($op[1:0] == 2'b00) ? $sum[31:0] : (($op[1:0] == 2'b01) ? $diff[31:0] : (($op[1:0] == 2'b10) ? $prod[31:0] : (($op[1:0] == 2'b11) ? $qout[31:0] : 32'b0))));
+   
+```
+
+Code and waveform from mackerchip is given below,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b7a7e994-49bd-4b71-8976-887c597c609b">
+
+
+
+## Validity
+### Introduction to Validity and it's advantages
+#### Validity
