@@ -669,6 +669,13 @@ TL verilog Code for calculator is given below,
    endmodule
 ```
 
+Here i have taken,
+| Function | Opcode |
+| -------- | ------ |
+|    Add   | 2'b00  |
+|    Diff  | 2'b01  |
+|    Prod  | 2'b10  |
+|    Div   | 2'b11  |
 
 <img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f406860f-024b-4233-ba66-2a659f5c679e">
 
@@ -730,3 +737,7 @@ The code and waveform in mackerchip is,
 
 <img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/e15cf1ed-8e05-4e24-bf47-1406f4fe9ff0">
 
+### Sequential Calculator lab
+In verilog we declare the values like this,
+
+<img width="501" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/cc3b148c-f3af-488f-a0d9-3a7fd244cb66">
