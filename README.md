@@ -828,3 +828,29 @@ Here, ```|calc```  construct allows you to express this calculation concisely wi
 Code and waveform in mackerchip is given below,
 
 <img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/2c5c6c1e-7365-4e51-bdad-2f8b7a5747b7">
+
+
+### Pipeline logic advantages and Demo in plateform
+#### Advantage(1)
+If we use more stages in pipeline then we can use high frequency clock.
+
+Here we can see the example of 1 stage and 3 stage pipeline for same circuit, 
+
+<img width="414" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/78446152-41c5-44b1-875f-a59bcf57907d">
+
+We can see that the frequency in 3 stage clock is higher than 1 stage.
+
+#### Advantage(2)
+we can use previous stage values after many stages like this,
+
+<img width="371" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/9683ae24-ea75-4ff6-87a0-ef15f043c878">
+
+By using ```>>4$aa[31:0]``` we can use value of "clock 0 aa" at "clock 4 aa"
+
+<img width="425" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/66e65645-5eb6-404a-b0ab-c5351a457f57">
+
+
+### Lab on error conditions within computation pipeline
+
+
+
