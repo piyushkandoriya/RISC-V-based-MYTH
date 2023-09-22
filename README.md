@@ -781,3 +781,50 @@ Code and waveform in mackerchip is given below,
 
 ## Pipelined logic
 ### Pipelined logic and Retiming
+#### Simple pipeline
+Let's understand the simple pipeline logic by pythagoras theorem,
+
+Link for Pythagoras theoram : ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0Elhz2#```
+
+<img width="146" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/2779e7ea-f818-49b3-8fbc-ac1f3a5888ae">
+
+Without pipeline it is calculated like this in single stage,
+
+<img width="259" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f78f1235-e7a3-42e1-9d06-22274e5615c2">
+
+Now using pipelining, we distributed it into 3 stages. After every stage, one latch or flip-flop should be available to store the value of previous stage until next stage is not ready to talk the value from previous stage.
+
+<img width="269" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/1fd4cf35-5150-4078-a7ed-3630f6a9a071">
+
+Here we are calculating both the square at in same stage but it is safe to calculate the both square in different stage like this,
+
+<img width="329" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/1a12f58e-c791-4f1b-b023-c260f52b6681">
+
+
+TL verilog code of Pythagoras theorem is given below,
+
+```
+`include"sqrt32.v"
+\TLV
+   $reset = *reset;
+
+   |calc      
+      @1 
+         $aa[31:0] = $rand1[3:0];
+         $aa_sq[31:0] = $aa[31:0] * $aa[31:0];
+      @2
+         $bb[31:0] = $rand2[3:0];
+         $bb_sq[31:0] = $bb[31:0] * $bb[31:0];
+      @3
+         $cc_sq[31:0] = $aa_sq + $bb_sq;
+      @4
+         $cc[31:0] = sqrt($cc_sq);
+```
+
+
+Here, we need to add lybrary for square roor by ``` `include "srqt32.v" ```
+Here, ```|calc```  construct allows you to express this calculation concisely within the TL-Verilog code.
+
+Code and waveform in mackerchip is given below,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/2c5c6c1e-7365-4e51-bdad-2f8b7a5747b7">
