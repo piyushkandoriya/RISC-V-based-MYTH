@@ -55,14 +55,14 @@
       - [Introduction to Validity and it's advantages](#Introduction-to-Validity-and-it's-advantages)
       - [Lab on Validity and valid when condition](#Lab-on-Validity-and-valid-when-condition)
       - [Lab to commpute total distance](#Lab-to-commpute-total-distance)
-      - [Lab on 2-Cycle Calculator with validity](#Lab-on-2--Cycle-Calculator)
+      - [Lab on 2-Cycle Calculator with validity](#Lab-on-2-Cycle-Calculator)
       - [Calculator Singal value Memory lab](#Calculator-Singal-value-Memory-lab)
 
     + [Wrap up](#Wrap-up)
       - [Introduction to Hierarchy concept](#Introduction-to-Hierarchy-concept)
       - [Day_3 closer](#Day_3-closer)
 
- * [Day 4 -Basic RISC-V CPU Micro-architecture](#Day-4--Basic-RISC-V-CPU-Micro-architecture)
+ * [Day 4 -Basic RISC-V CPU Micro-architecture](#Day-4-Basic-RISC-V-CPU-Micro-architecture)
     + [Introduction to simple RISC-V Micro-architecture](#Introduction-to-simple-RISC-V-Micro-architecture)
       - [Micro-architecture of single cycle RISC-V CPU](#Micro-architecture-of-single-cycle-RISC-V-CPU)
       - [Starting point code for RISC-V labs part-1](#Starting-point-code-for-RISC-V-labs-part-1)
@@ -87,7 +87,7 @@
       - [Labs for complementing branch instructions implementaion](#Labs-for-complementing-branch-instructions-implementaion)
       - [Lab to create simple Testbench](#Lab-to-create-simple-Testbench)
 
-* [Day 5 -Complete pipelined RISC-V CPU micro-architecture](#Day-5--Complete-pipelined-RISC-V-CPU-micro-architecture)
+* [Day 5 -Complete pipelined RISC-V CPU micro-architecture](#Day-5-Complete-pipelined-RISC-V-CPU-micro-architecture)
     + [Pipelining the CPU](#Pipelining-the-CPU)
       - [Introduction to Control flow Hazard and Read after write Hazard](#Introduction-to-Control-flow-Hazard-and-Read-after-write-Hazard)
       - [Lab to create 3-Cycle valid signal](#Lab-to-create-3-Cycle-valid-signal)
@@ -945,3 +945,127 @@ Code and waveform from mackerchip is given below,
 ## Validity
 ### Introduction to Validity and it's advantages
 #### Validity
+In TL-Verilog (Transaction-Level Verilog), "validity" refers to a concept related to the state of a transaction or data transfer. In transaction-level modeling, you often have data that needs to be transferred from one block or module to another, and it's important to track whether the data is valid or not.
+
+It's represented by a signal, often named valid, which can have two values: 1 (true) to indicate that the data is valid, or 0 (false) to indicate that the data is not valid or not ready.
+
+Validity signals help manage data flow, synchronization, and correctness in transaction-level hardware descriptions. They ensure that data is processed only when it's in a valid state, helping to maintain the integrity of the design.
+
+#### Advantages of Validity
+(1) Easy to debug the code 
+
+(2) Design become clean 
+
+(3) Error checking become more better
+
+(4) Automated clock getting
+
+#### What is clock getting?
+Clock getting is power saving feature. Lots of power consumption comming from clock circuit.
+
+clock gating is a technique used to optimize the power efficiency of digital integrated circuits. 
+
+It involves inserting logic gates into the clock network to selectively disable or "gate" the clock signal to certain areas of the chip when they are not in use. 
+
+This helps reduce dynamic power consumption by preventing unnecessary clock toggling in idle or unused portions of the circuit. 
+
+Clock gating is a common practice in modern chip design to improve energy efficiency without sacrificing performance.
+
+Basically it is avoids the toggling of every clock at everytime.
+
+### Lab on Validity and valid when condition
+#### Task: validity in pipeline of pythagoras theorem.
+
+Link for the pipelinig of pythagoras theorem with validity : ```https://www.makerchip.com/sandbox/0XDfnhVvQ/01jhoB#```
+
+TL verilog code is given below,
+```
+   `include"sqrt32.v"
+
+\TLV
+   
+   // Stimulus
+   |calc
+      @0
+         $valid = & $rand_valid[1:0];  // Valid with 1/4 probability
+                                       // (& over two random bits).
+   
+   // DUT (Design Under Test)
+   |calc
+      ?$valid
+         @1
+            $aa_sq[7:0] = $aa[3:0] ** 2;
+         @2
+            $bb_sq[7:0] = $bb[3:0] ** 2;
+         @3
+            $cc_sq[8:0] = $aa_sq + $bb_sq;
+         @4
+            $cc[4:0] = sqrt($cc_sq);
+
+
+   // To Print output in log
+   |calc
+      @4
+         \SV_plus
+            always_ff @(posedge clk) begin
+               if ($valid)
+                  \$display("sqrt((\%2d ^ 2) + (\%2d ^ 2)) = \%2d", $aa, $bb, $cc);
+            end
+```
+
+Here, we are enabling a valid bit when rand_valid = 3.
+
+code and waveform from mackerchip,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/80bfd981-96cb-4f0a-86b4-d779e08cb60c">
+
+
+### Lab to commpute total distance
+#### Task: Distance accumulator with validity
+Link for distance accumulator with validity : ```https://www.makerchip.com/sandbox/0XDfnhVvQ/098hXZ```
+We will create a distance accumulator by tracking the total distance travel in a series of "hopes", depicted in a RED line in a figure given below.
+
+<img width="134" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/c06de247-f7ba-4313-b79c-fb59700a7847">
+
+So these pipeline is looks like this,
+
+<img width="287" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/32f42223-eae1-4e0b-830e-bf57957bbb19">
+
+Here when reset come, total distance become 0. when valid signal come, mux will take value from adder. and when valid signal will not come, at that time mux will stuck at previous total distance at output.
+
+TL verilog code for this is given below,
+```
+  `include"sqrt32.v"
+
+\TLV
+   
+   // Stimulus
+  
+   |calc
+      @1
+         $reset = *reset;
+      
+      ?$valid
+         @1 
+            $aa[31:0] = $rand1[3:0];
+            $aa_sq[31:0] = $aa[31:0] * $aa[31:0];
+            $bb[31:0] = $rand2[3:0];
+            $bb_sq[31:0] = $bb[31:0] * $bb[31:0];
+         @2
+            $cc_sq[31:0] = $aa_sq + $bb_sq;
+         @3
+            $cc[31:0] = sqrt($cc_sq);
+      @4
+         $tot_dist[63:0] = $reset ? 64'b0 : ($valid ?
+                (>>1$tot_dist + $cc) : $RETAIN); 
+                  //$RETAIN = >>1$tot_dist
+```
+
+Here we use ```$RETAIN = >>1tot_dist```.
+
+Code and waveform form mackerchip is given below,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/bcba4e37-44df-45da-9a93-3b97b83c57fd">
+
+
+### Lab on 2-Cycle Calculator with validity
