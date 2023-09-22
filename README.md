@@ -701,6 +701,7 @@ $num[31:0] = $reset ? 1 : (>>1$num + >>2$num);
 ```
 
 Here, ```>>1$num``` means first previous number and ```>>2$num``` means second previus number.
+
 The series is: 1,1,2,3,5,8,13,21,...
 
 And we will implement it like this,
@@ -712,3 +713,20 @@ The code in mackerchip,
 <img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/2f191cfd-78dd-45f6-a825-87c18fb7c02a">
 
 #### Task (2): Counter 
+Link for counter is: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0lOh3y#```
+
+TL verilog code for counter is given below,
+
+```
+$reset = *reset;
+$count[31:0] = $reset ? 0 : (>>1$count+1);
+```
+
+The counter we will implement is like this,
+
+<img width="133" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/9dbc46ae-d0ce-482f-b840-6d2b8b099474">
+
+The code and waveform in mackerchip is,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/e15cf1ed-8e05-4e24-bf47-1406f4fe9ff0">
+
