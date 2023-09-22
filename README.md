@@ -36,7 +36,6 @@
 
 * [Day 3 - Digital Logic with TL-verilog and Makerchip](#Day-3---Digital-Logic-with-TL-verilog-and-Makerchip)
     + [Combinational logic in TL-verilog using Makerchip](#Combinational-logic-in-TL-verilog-using-Makerchip)
-      - [welcome](#welcome)
       - [Introduction to logic gates](#Introduction-to-logic-gates)
       - [Basic Mux implimentation and introduction to Makerchip](#Basic-Mux-implimentation-and-introduction-to-Makerchip)
       - [Labs for combinational logic](#Labs-for-combinational-logic)
@@ -537,7 +536,26 @@ Now we will build the RISC_V CPU in transister level verilog from srecth in Day_
 
 # Day 3 - Digital Logic with TL-verilog and Makerchip
 ## Combinational logic in TL-verilog using Makerchip
-### welcome
+### Introduction to logic gates
+Truth table and boolean function of different logic gates
 
+<img width="511" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/500e9934-cf23-48a8-a209-2344c08c134f">
 
+Combinational circuit for 3-bit full adder 
+
+<img width="496" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/5ec9a146-6214-4239-a817-a779d8cce6c5">
+
+Boolean arithmatic, Boolean calculus and verilog code for different gates
+
+<img width="349" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/04752341-6a09-4e37-bd2c-8aac2873aa28">
+
+### Basic Mux implimentation and introduction to Makerchip
+#### Multiplexer
+Mux symblol and combinational circuit using gates
+
+<img width="230" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/fc89c14e-245c-4f2b-ba50-ff9f57d1a682">
+<img width="230" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ebd04009-49c0-46f4-8834-2c6d9712f42a">
+
+Verilog for mux
+``` assign f = s ? x1 : x0 ```
 
