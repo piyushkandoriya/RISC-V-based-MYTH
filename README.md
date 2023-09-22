@@ -632,7 +632,9 @@ Tl verilog Code for calculator is given below,
    *passed = *cyc_cnt > 40;
    *failed = 1'b0;
 \SV
-   endmodule```
+   endmodule
+```
+
 
 <img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f406860f-024b-4233-ba66-2a659f5c679e">
 
