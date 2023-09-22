@@ -578,7 +578,7 @@ Regarding TL-verilog
 
 <img width="280" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/0b44497d-bbca-407f-8d0b-c871b98f3562">
 
-#### Task (1): Writing the inverter code in macker chip
+#### Task (1): Writing the inverter code in mackerchip
 Link for inverter: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0pghJq```
 
 Tl verilog code for inverter is given below,
@@ -588,6 +588,7 @@ $reset = *reset;
    
    $out = !$in ;
 ```
+
 <img width="479" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ae6405ed-cba2-4700-9dd4-e0a0a11c88cf">
 
 Now after compiling, we can see the diagram and waveform of Inverter
@@ -595,6 +596,14 @@ Now after compiling, we can see the diagram and waveform of Inverter
 <img width="475" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ba23712a-2e8f-4bb2-87ea-73ec515fe445">
 
 #### Task (2): write program regarding vectors. for example sum of 4 bit numbers,
+Link for inverter: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0qjhx9```
+
+Tl verilog code for sum of 4 bit is given below,
+
+```
+$reset = *reset;
+$out[4:0] = $in1[3:0] + $in2[3:0];
+```
 
 <img width="478" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/01cc1e65-7e5a-4249-9393-d185d764db61">
 
@@ -606,11 +615,19 @@ Now after compiling, we can see the diagram and waveform of Inverter
 Here in waveform we can see the sum of in1 and in2 at out
 
 #### Task (3):  write program for 2x1 Mux
+Link for inverter: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0qjhx9```
+
+Tl verilog code for 2X1 Mux is given below,
+
+```
+$reset = *reset;
+$out[7:0] = $sel ? $in1[7:0] : $in0[7:0]; 
+```
 
 <img width="479" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/4386e918-9bca-4d1d-8b40-46ace83a526d">
 
 
-Here, we are ttaking input is 8 bit
+Here, we are taking input is 8 bit
 
 
 <img width="475" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/3e7470df-e6c5-4adc-aeeb-1e8e0f610117">
