@@ -49,7 +49,7 @@
       - [Pipelined logic and Retiming](#Pipelined-logic-and-Retiming)
       - [Pipeline logic advantages and Demo in plateform](#Pipeline-logic-advantages-and-Demo-in-plateform)
       - [Lab on error conditions within computation pipeline](#Lab-on-error-conditions-within-computation-pipeline)
-      - [Lab on 2-Cycle Calculator](#Lab-on-2--Cycle-Calculator)
+      - [Lab on 2-Cycle Calculator](#Lab-on-2-Cycle-Calculator)
 
     + [Validity](#Validity)
       - [Introduction to Validity and it's advantages](#Introduction-to-Validity-and-it's-advantages)
