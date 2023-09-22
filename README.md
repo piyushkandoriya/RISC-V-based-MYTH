@@ -681,4 +681,34 @@ waveform and design block for calculator is,
 
 
 
+## Sequential logic
+### Introduction to sequential logic and Counter lab
+#### Introduction to sequential logic
+Sequential logic is sequenced by clock signal.
+For example D-flop flop, when clock pulse will come, it will change it's state.
+These sequential circuits are constructed like when reset signal came, it will goes into known state like initial state.
+Any big state machine can be made by using both sequential logic and combinational logic.
 
+<img width="245" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/a4c78843-d856-46d3-a183-300f3668264f">
+
+#### Task (1): Fibonacci series - reset 
+Link for Fibonacci series is: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0zmhyg```
+
+TL verilog code for Fibonacci series is given below,
+```
+$reset = *reset;
+$num[31:0] = $reset ? 1 : (>>1$num + >>2$num);
+```
+
+Here, ```>>1$num``` means first previous number and ```>>2$num``` means second previus number.
+The series is: 1,1,2,3,5,8,13,21,...
+
+And we will implement it like this,
+
+<img width="224" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/4d4b037d-9bdc-4087-beb6-5612f75c762d">
+
+The code in mackerchip, 
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/2f191cfd-78dd-45f6-a825-87c18fb7c02a">
+
+#### Task (2): Counter 
