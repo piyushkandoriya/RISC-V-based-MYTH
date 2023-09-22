@@ -741,3 +741,43 @@ The code and waveform in mackerchip is,
 In verilog we declare the values like this,
 
 <img width="501" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/cc3b148c-f3af-488f-a0d9-3a7fd244cb66">
+
+#### Task : Sequential calculator
+Link for Sequential calculator: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0pghJZ```
+
+A real calculator remember the last value of calculation and it can use it for the next operation. for that we need a flip flop to remember the previous value.
+
+When we press reset, the output should be 0.
+
+<img width="308" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/e5641c3f-1816-4e20-af8b-87646c90435c">
+
+we made calculator befor, but it was pure combinational. now we will do some changes in it to make sequential calculator.
+
+As we can see the above diagram, previous output of calculator is use as a new operand for next operation.
+
+
+TL verilog code for sequential calculator is given below,
+
+```
+$reset = *reset;
+   
+   $val1[31:0] = $rand1[3:0];
+   $val2[31:0] = $reser ? 0 : (>>1$out[31:0]);
+   $op[1:0] = $rand3[1:0];
+   
+   $sum[31:0] = $val1[31:0] + $val2[31:0];
+   $diff[31:0] = $val1[31:0] - $val2[31:0];
+   $prod[31:0] = $val1[31:0] * $val2[31:0];
+   $qout[31:0] = $val1[31:0] / $val2[31:0];
+   
+   $out[31:0] = ($op[1:0] == 2'b00) ? $sum[31:0] : (($op[1:0] == 2'b01) ? $diff[31:0] : (($op[1:0] == 2'b10) ? $prod[31:0] : (($op[1:0] == 2'b11) ? $qout[31:0] : 32'b0)));
+   
+```
+
+Code and waveform in mackerchip is given below,
+
+<img width="959" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/d1920a59-fa0f-444b-b612-b1fe9625fd35">
+
+
+## Pipelined logic
+### Pipelined logic and Retiming
