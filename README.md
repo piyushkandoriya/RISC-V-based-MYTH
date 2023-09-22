@@ -581,7 +581,7 @@ Regarding TL-verilog
 #### Task (1): Writing the inverter code in mackerchip
 Link for inverter: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0pghJq```
 
-Tl verilog code for inverter is given below,
+TL verilog code for inverter is given below,
 
 ```
 $reset = *reset;
@@ -598,7 +598,7 @@ Now after compiling, we can see the diagram and waveform of Inverter
 #### Task (2): write program regarding vectors. for example sum of 4 bit numbers,
 Link for inverter: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0qjhx9```
 
-Tl verilog code for sum of 4 bit is given below,
+TL verilog code for sum of 4 bit is given below,
 
 ```
 $reset = *reset;
@@ -617,7 +617,7 @@ Here in waveform we can see the sum of in1 and in2 at out
 #### Task (3):  write program for 2x1 Mux
 Link for inverter: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0qjhx9```
 
-Tl verilog code for 2X1 Mux is given below,
+TL verilog code for 2X1 Mux is given below,
 
 ```
 $reset = *reset;
@@ -646,7 +646,7 @@ Link of combinational calculator : ```https://www.makerchip.com/sandbox/0XDfnhVv
 
 we will use ```$val1[31:0] = $rand1[3:0]``` and ```$val2[31:0] = $rand2[3:0]``` for limit the input bit to 4 from 32. ```rand``` will generate 16 different combination randomly.
 
-Tl verilog Code for calculator is given below,
+TL verilog Code for calculator is given below,
 
 ```m5_makerchip_module   // (Expanded in Nav-TLV pane.)
 \TLV
