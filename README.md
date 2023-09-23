@@ -1993,7 +1993,7 @@ Code and block diagram from mackerchip is given below,
 <img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/2a11cdc0-6878-4a52-89b0-8c6e21a73cc3">
 
 ### Full RISC-V architecture with testbench
-Link of full RISC-V architecture is: "https://myth.makerchip.com/sandbox/01wfphG9Q/0k5hQO"
+Link of full RISC-V architecture is: ```https://myth.makerchip.com/sandbox/01wfphG9Q/0k5hQ```
 
 TL verilog code for RISC-V architecture is given below,
 ```verilog
