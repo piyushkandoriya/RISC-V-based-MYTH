@@ -84,6 +84,7 @@
       - [Concept of Array and Register file details](#Concept-of-Array-and-Register-file-details)
       - [Labs for Implementing branch instructions](#Labs-for-Implementin-branch-instructions)
       - [Labs for complementing branch instructions implementaion](#Labs-for-complementing-branch-instructions-implementaion)
+      - [Full RISC-V architecture](#Full-RISC-V-architecture)
       - [Lab to create simple Testbench](#Lab-to-create-simple-Testbench)
 
 * [Day 5 -Complete pipelined RISC-V CPU micro-architecture](#Day-5-Complete-pipelined-RISC-V-CPU-micro-architecture)
@@ -1995,7 +1996,6 @@ Code and block diagram from mackerchip is given below,
 Link of full RISC-V architecture is: "https://myth.makerchip.com/sandbox/01wfphG9Q/0vgh3m"
 
 TL verilog code for RISC-V architecture is given below,
-```
 ```verilog
 \m4_TLV_version 1d: tl-x.org
 \SV
