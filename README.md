@@ -1,7 +1,7 @@
 # **RISC-V-based-MYTH**
 # Contents 
 
-* [Day 1 -Introduction to RISC_V ISA and GNU compiler toolchain](#Day-1--Introductionto-RISC_V-ISA-and-GNU-compiler-toolchain)
+* [Day 1 -Introduction to RISC_V ISA and GNU compiler toolchain](#Day-1--Introduction-to-RISC_V-ISA-and-GNU-compiler-toolchain)
     + [Introduction to RISC-V basic Keywords](#Introduction-to-RISC-V-basic-keywords)
       - [introduction](#introduction)
       - [From apps to Hardware](#From-Apps-to-Hardware)
