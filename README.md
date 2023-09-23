@@ -583,7 +583,7 @@ Link for inverter: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0pghJq```
 
 TL verilog code for inverter is given below,
 
-```
+```verilog
 $reset = *reset;
    
    $out = !$in ;
@@ -600,7 +600,7 @@ Link for inverter: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0qjhx9```
 
 TL verilog code for sum of 4 bit is given below,
 
-```
+```verilog
 $reset = *reset;
 $out[4:0] = $in1[3:0] + $in2[3:0];
 ```
@@ -619,7 +619,7 @@ Link for inverter: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0qjhx9```
 
 TL verilog code for 2X1 Mux is given below,
 
-```
+```verilog
 $reset = *reset;
 $out[7:0] = $sel ? $in1[7:0] : $in0[7:0]; 
 ```
@@ -648,7 +648,8 @@ we will use ```$val1[31:0] = $rand1[3:0]``` and ```$val2[31:0] = $rand2[3:0]``` 
 
 TL verilog Code for calculator is given below,
 
-```m5_makerchip_module   // (Expanded in Nav-TLV pane.)
+```verilog
+m5_makerchip_module   // (Expanded in Nav-TLV pane.)
 \TLV
    $reset = *reset;
    
@@ -702,7 +703,7 @@ Any big state machine can be made by using both sequential logic and combination
 Link for Fibonacci series is: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0zmhyg```
 
 TL verilog code for Fibonacci series is given below,
-```
+```verilog
 $reset = *reset;
 $num[31:0] = $reset ? 1 : (>>1$num + >>2$num);
 ```
@@ -724,7 +725,7 @@ Link for counter is: ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0lOh3y#```
 
 TL verilog code for counter is given below,
 
-```
+```verilog
 $reset = *reset;
 $count[31:0] = $reset ? 0 : (>>1$count+1);
 ```
@@ -758,7 +759,7 @@ As we can see the above diagram, previous output of calculator is use as a new o
 
 TL verilog code for sequential calculator is given below,
 
-```
+```verilog
 $reset = *reset;
    
    $val1[31:0] = $rand1[3:0];
@@ -803,7 +804,7 @@ Here we are calculating both the square at in same stage but it is safe to calcu
 
 TL verilog code of Pythagoras theorem is given below,
 
-```
+```verilog
 `include"sqrt32.v"
 \TLV
    $reset = *reset;
@@ -875,7 +876,7 @@ Link of Counter and calculator together in pipeline at one stage: ```https://www
 Here we can see the counter and calculator are together at stage @1 in "|calc".
 
 TL verilog code for Counter and calculator together in pipeline is given below,
-```
+```verilog
 $reset = *reset;
    
    |calc
@@ -979,7 +980,7 @@ Basically it is avoids the toggling of every clock at everytime.
 Link for the pipelinig of pythagoras theorem with validity : ```https://www.makerchip.com/sandbox/0XDfnhVvQ/01jhoB#```
 
 TL verilog code is given below,
-```
+```verilog
    `include"sqrt32.v"
 
 \TLV
@@ -1034,7 +1035,7 @@ So these pipeline is looks like this,
 Here when reset come, total distance become 0. when valid signal come, mux will take value from adder. and when valid signal will not come, at that time mux will stuck at previous total distance at output.
 
 TL verilog code for this is given below,
-```
+```verilog
   `include"sqrt32.v"
 
 \TLV
@@ -1076,7 +1077,7 @@ Previously what we are doing it is when invalid signal come, the mux is going to
 <img width="292" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/176062f9-7e2e-4d94-ae74-472a00b477b1">
 
 TL verilog code for 2-cycle calculator with validity is given below,
-```
+```verilog
    `include"sqrt32.v"
 
 \TLV
@@ -1238,7 +1239,7 @@ We have to write the code in ```https://myth.makerchip.com/sandbox?code_url=http
 Link for PC next is: ```https://myth.makerchip.com/sandbox/01wfphG9Q/0JZhOK``` 
 
 TL verilog code for PC is given below,
-```
+```verilog
     m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
 
    |cpu
@@ -1295,7 +1296,7 @@ Here we are writing [M4_IMEM_INDEX_CNT-1:0] means the range of memory address bi
 Now, [M4_IMEM_INDEX_CNT+1:2] means every PC value is 32 bit number. so every next instruction address will be 4 times bigger then current address. so here by shifting 2 bit right side, we are multiplying current address by 4 times and giving new address from pc.
 
 TL verilog Code for this is given below,
-```
+```verilog
 \TLV
 
    // /====================\
@@ -1421,7 +1422,7 @@ Let's see the example of instruction "BEQ"
 Link of instruction decode is : ```https://myth.makerchip.com/sandbox/01wfphG9Q/0Y6h41#```
 
 TL verilog code for Instruction decode is given below,
-```
+```verilog
    m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
 
 |cpu
@@ -1539,7 +1540,7 @@ Now we are assigning the read data from register file to $src1/2_value[31:0]. Th
 Link for register file read is :```https://myth.makerchip.com/sandbox/01wfphG9Q/0O7hyl#```
 
 TL verilog code for register file read is given below,
-```
+```verilog
    m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
 
    |cpu
@@ -1666,7 +1667,7 @@ Syntax for add/addi is : ```
                          ```    
 
 TL verilog code is given below,
-```
+```verilog
    m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
 
    |cpu
@@ -1949,7 +1950,7 @@ Link for branch instruction is :```https://myth.makerchip.com/sandbox/01wfphG9Q/
 When branch instruction is taken, we have to update the PC = PC + immidiate which will gives you the address of next instruction. and we have to modify the $pc MUX expression to use previous $br_tgr_pc when the previous intruction was branch taken.
 
 TL verilog code for branch instruction is given below,
-```
+```verilog
    m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
 
    |cpu
