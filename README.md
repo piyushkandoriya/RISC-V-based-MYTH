@@ -23,7 +23,7 @@
       - [Introduction to Application Binary Interface](#Introduction-to-Application-Binary-Interface)
       - [Memory allocation for Double word](#Memory-allocation-for-Double-word)
       - [Load Add and Store instructions with example](#Load-Add-and-Store-instructions-with-example)
-      - [Concluding 32_Registers and Their respective ABI names](#Concluding_32_Registers-and-Their-respective-ABI-names)
+      - [Concluding 32_Registers and Their respective ABI names](#Concluding-32_Registers-and-Their-respective-ABI-names)
  
     + [Lab work using ABI function calls](#Lab-work-usin-ABI-function-calls)
       - [Study new algorithm for sum of 1 to N using ASM](#Study-new-algorithm-for-sum-of-1-to-N-using-ASM)
