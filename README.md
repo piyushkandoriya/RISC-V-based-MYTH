@@ -23,7 +23,7 @@
       - [Introduction to Application Binary Interface](#Introduction-to-Application-Binary-Interface)
       - [Memory allocation for Double word](#Memory-allocation-for-Double-word)
       - [Load Add and Store instructions with example](#Load-Add-and-Store-instructions-with-example)
-      - [Concluding 32-Registers and Their respective ABI names](#Concluding-32--Registers-and-Their-respective-ABI-names)
+      - [Concluding 32_Registers and Their respective ABI names](#Concluding-32_Registers-and-Their-respective-ABI-names)
  
     + [Lab work using ABI function calls](#Lab-work-usin-ABI-function-calls)
       - [Study new algorithm for sum of 1 to N using ASM](#Study-new-algorithm-for-sum-of-1-to-N-using-ASM)
@@ -402,7 +402,7 @@ Other instruction is "sd x8,8(x23)". Here sd means store doubleword. here we are
 
 <img width="454" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/88317401-29ee-4076-bd20-0e1c8b085364">
 
-### Concluding 32-Registers and Their respective ABI names 
+### Concluding 32_Registers and Their respective ABI names 
 ld,add,sd are base integer istructions in RV64I. under these, add is called R-type instruction because it is implemented on register only. similarly, ld is called i-type instrtuction where imedeate bits are use for perform the operaration and sd is called S-type instruction here sourse register is used.
 
 <img width="467" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/17b2b3b1-9fd5-411f-b9b3-5be252567499">
