@@ -1373,6 +1373,25 @@ Code and waveform from mackerchip is given below,
 
 
 ### Lab for RV instruction Types IRSBJU decode logic
-#### Task: implementing decode
+#### instruction type decode
+In 32 bit instruction, instr[6:2] (5bit) shows the types of instruction like, I,R,S,B,J,U.  OPCODE IS 7 BIT [6:0] in  total instruction. except this 5 bit [6:2], other 2 bits are always "11" for base types instruction.
+
+<img width="424" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/0fa8393b-c639-426e-919d-8a2f7f6498aa">
+
+In upper image code, we define the i type(immediate type) intructions.
+
+### Lab for instruction immediate decode logic for RV-ISBUJ
+Let's see different types of instruction (I,R,S,B,J,U).
+
+<img width="485" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/9d60ed4f-860a-4881-a01c-99862425d84f">
+
+In immediate type instruction, Immediate bit = last 12 bit from instruction([31:20]). But $imm[31:0] is 32 bit. To full this immediate vector, we are copy first 11 bit [30:20] in last 11 bit($imm[10:0]) of $imm[31:0] vector and repeat that 31th bit of instruction vector($istr[31:0]) 21 times to fill the other 21 bits ($imm[31:11]) of $imm[31:0] vector.
 
 
+### Labs to decode other fields of instruction for RV-ISBUJ
+#### Instruction decode
+Let's extract the other file like $func7,$fuct3,$rs1, $rs1,$rd and $opcode.
+
+<img width="565" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/0f04993d-90c0-4693-be1f-0f458470b538">
+
+### Labs to decode instruction field based on Instr type RV-ISBUJ
