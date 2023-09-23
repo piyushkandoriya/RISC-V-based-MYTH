@@ -111,7 +111,7 @@
  * [Acknowledgement](#Acknowledgement)
     
 
-# Day 1 -Introduction to RISC_V ISA(instruction set architecture) and GNU compiler toolchain	 
+# Day 1 -Introduction to RISC_V ISA and GNU compiler toolchain	 
 ## Introduction to RISC-V basic keywords
 ### Introduction
 ISA (Instruction Set Architecture) is nothing but language of the computer in which we are giving some command to the computer.
