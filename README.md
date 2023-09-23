@@ -77,7 +77,7 @@
       - [Labs of complete instruction decode](#Labs-of-complete-instruction-decode)
         
     + [RISC-V control logic](#RISC-V-control-logic)
-      - [Lab for register file read part-1(USING UPDATED SHELL CODE)](#Lab-for-register-file-read-part-1(USING-UPDATED-SHELL-CODE))
+      - [Lab for register file read part-1](#Lab-for-register-file-read-part-1)
       - [Lab for register file read part-2](#Lab-for-register-file-read-part-2)
       - [Lab for ALU operations for add/addi](#Lab-for-ALU-operations-for-add/addi)
       - [Lab for register file write](#Lab-for-register-file-write)
@@ -1521,7 +1521,7 @@ Code and block diagram from mackerchip is given below,
 
 
 ## RISC-V control logic
-### Lab for register file read part-1(USING UPDATED SHELL CODE)
+### Lab for register file read part-1
 #### TASK: Implementation of register file read (RF Rd)
 <img width="472" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/3cd7a39c-4f8e-4556-b37b-be8e2c074a93">
 
