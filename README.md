@@ -22,7 +22,7 @@
     + [Application Binary Interface](#Application-Binary-Interface)
       - [Introduction to Application Binary Interface](#Introduction-to-Application-Binary-Interface)
       - [Memory allocation for Double word](#Memory-allocation-for-Double-word)
-      - [Load, Add and Store instructions with example](#Load,-Add-and-Store-instructions-with-example)
+      - [Load, Add and Store instructions with example](#Load-Add-and-Store-instructions-with-example)
       - [Concluding 32-Registers and Their respective ABI names](#Concluding-32--Registers-and-Their-respective-ABI-names)
  
     + [Lab work using ABI function calls](#Lab-work-usin-ABI-function-calls)
@@ -375,7 +375,7 @@ If the address of first doubleword is M[0] then adderess of second doubleword is
 
 <img width="529" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/27e33499-d447-4f0b-a9e5-9c6a16c54e4a">
 
-### Load, Add and Store instructions with example
+### Load Add and Store instructions with example
 Let's take an example of array which holds 3 doublewords. means it will strord from 0-7,8-15,16-23 memory locations.
 
 <img width="526" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/a8c6f846-9907-490f-8bad-5d066410197f">
