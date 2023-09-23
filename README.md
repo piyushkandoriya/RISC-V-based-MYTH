@@ -59,8 +59,6 @@
       - [Calculator Singal value Memory lab](#Calculator-Singal-value-Memory-lab)
 
     + [Wrap up](#Wrap-up)
-      - [Introduction to Hierarchy concept](#Introduction-to-Hierarchy-concept)
-      - [Day_3 closer](#Day_3-closer)
 
  * [Day 4 -Basic RISC-V CPU Micro-architecture](#Day-4-Basic-RISC-V-CPU-Micro-architecture)
     + [Introduction to simple RISC-V Micro-architecture](#Introduction-to-simple-RISC-V-Micro-architecture)
@@ -1069,3 +1067,111 @@ Code and waveform form mackerchip is given below,
 
 
 ### Lab on 2-Cycle Calculator with validity
+Link for 2-cycle calculator with  validity is :```https://www.makerchip.com/sandbox/0XDfnhVvQ/0j2hX5#```
+
+Previously what we are doing it is when invalid signal come, the mux is going to be reseted. but now we use valid signal to validet the output.
+
+<img width="292" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/176062f9-7e2e-4d94-ae74-472a00b477b1">
+
+TL verilog code for 2-cycle calculator with validity is given below,
+```
+   `include"sqrt32.v"
+
+\TLV
+   
+   // Stimulus
+  
+   $reset = *reset;
+   
+   $val2[31:0] = $rand4[3:0];
+   
+   |calc
+      @1
+         $reset = *reset;
+         
+         $val1[31:0] = $rand1[3:0];
+         $val2[31:0] = >>2$out;
+         $op[1:0] = $rand3[1:0];
+         $valid = $reset ? 0 : >>1$valid+1;
+         $valid_or_reset = $valid || $reset; 
+      ?$valid_or_reset
+         @1
+            $sum[31:0] = $val1+$val2;
+            $diff[31:0] = $val1-$val2;
+            $prod[31:0] = $val1*$val2;
+            $div[31:0] = $val1/$val2;
+            
+         @2
+            $out[31:0] = ($reset) ? 32'h0 : (($op[1:0] == 2'b00) ? $sum[31:0] : (($op[1:0] == 2'b01) ? $diff[31:0] : (($op[1:0] == 2'b10) ? $prod[31:0] : (($op[1:0] == 2'b11) ? $qout[31:0] : 32'b0))));
+   
+```
+##### Note: Here, when reset is not equal to zero at that time whole block will run.
+Code and waveform form mackerchip is given below,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/121eba67-bf69-4f0d-9475-43b32af9e8a7">
+
+### Calculator Singal value Memory lab
+Link of calculator single value memory is : ```https://www.makerchip.com/sandbox/0XDfnhVvQ/0oYhRw```
+
+Calculators supports "mem" and "recall" to remember and recall the values.
+
+<img width="309" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/708336a1-0e09-4492-afb0-580b9e4adbad">
+
+For this memory and recall we have do some modification in previos 2-cycle calculator. 
+
+These modifications are (1) change "$op[1:0]" to "$op[2:0]" means now opration can be 9. (2) we have to add one memory mux to store the bit. (3) select recall value in output mux. means when recall signal come, output mux will stuck at output value of memory mux.
+
+TL code for calculator singal value memory is given below,
+```
+   `include"sqrt32.v"
+
+\TLV
+   
+   // Stimulus
+  
+  |calc
+      @1
+         $reset = *reset;
+         $val1 [31:0] = >>2$out;
+         $val2 [31:0] = $rand2[3:0];
+         $valid = $reset ? 1'b0 : >>1$valid + 1'b1 ;
+         $valid_or_reset = $valid || $reset;
+
+      ?$vaild_or_reset
+         @1   
+            $sum [31:0] = $val1 + $val2;
+            $diff[31:0] = $val1 - $val2;
+            $prod[31:0] = $val1 * $val2;
+            $div[31:0] = $val1 / $val2;
+
+         @2   
+            $mem[31:0] = $reset ? 32'b0 :
+                         ($op[2:0] == 3'b101) ? $val1 : >>2$mem ;
+
+            $out [31:0] = $reset ? 32'b0 :
+                          ($op[2:0] == 3'b000) ? $sum :
+                          ($op[2:0] == 3'b001) ? $diff :
+                          ($op[2:0] == 3'b010) ? $prod :
+                          ($op[2:0] == 3'b011) ? $quot :
+                          ($op[2:0] == 3'b100) ? >>2$mem : >>2$out ;
+
+```
+
+##### Here, when reset is not equal to zero at that time whole block will run. when op=4 at that time output will give memory value of 2 previous stage othervise output will give 2 previous value of output. when op=5, memory= $val1 othervise always memory= 2 previous value of memory (memory is always in a loop with 2 previous value of memory except op=5).
+
+code and waveform from mackerchip is given below,
+
+<img width="958" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/332f93b5-79cd-4f49-963d-8d58d41442ac">
+
+
+
+## Wrap up
+### LINK OF MACKERCHIP EXAMPLES WITH TUTIRIALS : ```https://myth.makerchip.com/sandbox?code_url=https:%2F%2Fraw.githubusercontent.com%2Fstevehoover%2FRISC-V_MYTH_Workshop%2Fmaster%2Freference_solutions.tlv```
+
+
+
+
+# Day 4 -Basic RISC-V CPU Micro-architecture
+## Introduction to simple RISC-V Micro-architecture
+### Micro-architecture of single cycle RISC-V CPU
+
