@@ -77,7 +77,7 @@
       - [Labs of complete instruction decode](#Labs-of-complete-instruction-decode)
         
     + [RISC-V control logic](#RISC-V-control-logic)
-      - [Lab for register file read part-1(USE UPDATED SHELL CODE)](#Lab-for-register-file-read-part-1(USE-UPDATED-SHELL-CODE))
+      - [Lab for register file read part-1(USING UPDATED SHELL CODE)](#Lab-for-register-file-read-part-1(USING-UPDATED-SHELL-CODE))
       - [Lab for register file read part-2](#Lab-for-register-file-read-part-2)
       - [Lab for ALU operations for add/addi](#Lab-for-ALU-operations-for-add/addi)
       - [Lab for register file write](#Lab-for-register-file-write)
@@ -1337,10 +1337,8 @@ TL verilog Code for this is given below,
          // Instruction Fetch 
          $imem_rd_en = !$reset;
          $imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2];
-         $instr[31:0] = $imem_rd_data[31:0];
-      ?$imem_rd_en
-         @1
-            $imem_rd_data[31:0] = /imem[$imem_rd_addr]$instr;
+         $instr[31:0] = $imem_rd_en ? $imem_rd_data[31:0] : 32'b0;
+         `BOGUS_USE($instr)
 
       // Note: Because of the magic we are using for visualisation, if visualisation is enabled below,
       //       be sure to avoid having unassigned signals (which you might be using for random inputs)
@@ -1369,7 +1367,8 @@ TL verilog Code for this is given below,
 
 Code and waveform from mackerchip is given below,
 
-<img width="959" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/7c54ca1f-d8fe-4502-8cd7-d97fa2d77508">
+<img width="956" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b0bdcf21-fdbe-4142-beb0-ae31d72d8439">
+
 
 
 
@@ -1418,13 +1417,13 @@ Let's see the example of instruction "BEQ"
 <img width="214" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b0e644d0-c91c-4f4e-9722-408d182ac147">
 
 ### Labs of complete instruction decode
-Link of instruction decode is : ```https://myth.makerchip.com/sandbox/01wfphG9Q/0GZhQL```
+Link of instruction decode is : ```https://myth.makerchip.com/sandbox/01wfphG9Q/0NxhGw#```
 
 TL verilog code for Instruction decode is given below,
 ```
    m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
 
-   |cpu
+|cpu
       @0
          $reset = *reset;
          $pc[31:0] = >>1$reset ? 32'b0 : (>>1$pc + 32'd4);
@@ -1432,10 +1431,7 @@ TL verilog code for Instruction decode is given below,
          // Instruction Fetch
          $imem_rd_en = !$reset;
          $imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2];
-         $instr[31:0] = $imem_rd_data[31:0];
-      ?$imem_rd_en
-         @1
-            $imem_rd_data[31:0] = /imem[$imem_rd_addr]$instr;
+         $instr[31:0] = $imem_rd_en ? $imem_rd_data[31:0] : 32'b0;
       @1
          //Instruction Decode
          $is_i_instr = $instr[6:2] ==? 5'b0000x ||   // ==? is used to compare the binary don't cares
@@ -1492,7 +1488,7 @@ TL verilog code for Instruction decode is given below,
          $is_bgeu = $dec_bits ==? 11'bx_111_1100011;
          $is_addi = $dec_bits ==? 11'bx_000_0010011;
          $is_add = $dec_bits ==? 11'b0_000_0110011;
-   `BOGUS_USE($is_beq $is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
+         `BOGUS_USE($is_beq $is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
       //`BOGUS_USE is a system verilog signgle argument macro to silence the warning is assigned but never used.
       
    
@@ -1514,14 +1510,272 @@ TL verilog code for Instruction decode is given below,
    m4+cpu_viz(@4)    // For visualisation, argument should be at least equal to the last stage of CPU logic. @4 would work for all labs.
 \SV
    endmodule
-
 ```
 
 Code and block diagram from mackerchip is given below,
 
-<img width="953" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/dd22397d-854b-4838-862b-bdce4fb2d1f0">
+<img width="959" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ed13229d-a980-4312-ab1a-7025218c63dd">
+
+
 
 
 
 ## RISC-V control logic
-### Lab for register file read part-1(USE UPDATED SHELL CODE)
+### Lab for register file read part-1(USING UPDATED SHELL CODE)
+#### TASK: Implementation of register file read (RF Rd)
+<img width="472" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/3cd7a39c-4f8e-4556-b37b-be8e2c074a93">
+
+Upto now we decoded the instructions. Now based on instruction we have to read the oprand value from register file using decode bits like "$rs1","$rs2"(both rs1 and rs2 have address of register file).
+
+This register file is already implemented in our shell. so we have to uncomment the syntax "//m4+rf(@1,@1)". and we have to give proper input signals to rf block like $reset, $rf_wr_en, $rf_rd_en1, $rf_rd_en2,etc.
+
+<img width="317" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/68c65f3d-304b-4fd1-85cc-636232ea62a9">
+
+### Lab for register file read part-2
+Now we are assigning the read data from register file to $src1/2_value[31:0]. These signals we will gives to input in ALU.
+
+Link for register file read is :```https://myth.makerchip.com/sandbox/01wfphG9Q/0O7hyl#```
+
+TL verilog code for register file read is given below,
+```
+   m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
+
+   |cpu
+      @0
+         $reset = *reset;
+         $pc[31:0] = >>1$reset ? 32'b0 : (>>1$pc + 32'd4);
+      @1
+         // Instruction Fetch
+         $imem_rd_en = !$reset;
+         $imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2];
+         $instr[31:0] = $imem_rd_en ? $imem_rd_data[31:0] : 32'b0;
+         
+      @1
+         //Instruction Decode
+         $is_i_instr = $instr[6:2] ==? 5'b0000x ||   // ==? is used to compare the binary don't cares
+                       $instr[6:2] ==? 5'b001x0 ||
+                       $instr[6:2] ==? 5'b11001 ||
+                       $instr[6:2] ==? 5'b11100;
+         
+         $is_u_instr = $instr[6:2] ==? 5'b0x101;
+         
+         $is_r_instr = $instr[6:2] ==? 5'b01011 ||
+                       $instr[6:2] ==? 5'b011x0 ||
+                       $instr[6:2] ==? 5'b10100;
+         
+         $is_b_instr = $instr[6:2] ==? 5'b11000;
+         
+         $is_j_instr = $instr[6:2] ==? 5'b11011;
+         
+         $is_s_instr = $instr[6:2] ==? 5'b0100x;
+         
+         $imm[31:0] = $is_i_instr ? {{21{$instr[31]}}, $instr[30:20]} :
+                      $is_s_instr ? {{21{$instr[31]}}, $instr[30:25], $instr[11:7]} :
+                      $is_b_instr ? {{20{$instr[31]}}, $instr[7], $instr[30:25], $instr[11:8], 1'b0} :
+                      $is_u_instr ? {$instr[31:12], 12'b0} :
+                      $is_j_instr ? {{12{$instr[31]}}, $instr[19:12], $instr[20], $instr[30:21], 1'b0} :
+                                    32'b0;
+         $opcode[6:0] = $instr[6:0];
+         
+         $rs2_valid = $is_r_instr || $is_s_instr || $is_b_instr;
+         ?$rs2_valid
+            $rs2[4:0] = $instr[24:20];
+            
+         $rs1_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
+         ?$rs1_valid
+            $rs1[4:0] = $instr[19:15];
+         
+         $funct3_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
+         ?$funct3_valid
+            $funct3[2:0] = $instr[14:12];
+            
+         $funct7_valid = $is_r_instr ;
+         ?$funct7_valid
+            $funct7[6:0] = $instr[31:25];
+            
+         $rd_valid = $is_r_instr || $is_i_instr || $is_u_instr || $is_j_instr;
+         ?$rd_valid
+            $rd[4:0] = $instr[11:7];
+            
+         $dec_bits[10:0] = {$funct7[5], $funct3, $opcode};
+         $is_beq = $dec_bits ==? 11'bx_000_1100011;
+         $is_bne = $dec_bits ==? 11'bx_001_1100011;
+         $is_blt = $dec_bits ==? 11'bx_100_1100011;
+         $is_bge = $dec_bits ==? 11'bx_101_1100011;
+         $is_bltu = $dec_bits ==? 11'bx_110_1100011;
+         $is_bgeu = $dec_bits ==? 11'bx_111_1100011;
+         $is_addi = $dec_bits ==? 11'bx_000_0010011;
+         $is_add = $dec_bits ==? 11'b0_000_0110011;
+         `BOGUS_USE($is_beq $is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
+      //`BOGUS_USE is a system verilog signgle argument macro to silence the warning is assigned but never used.
+         
+      @1
+         //Register File Read
+         
+         $rf_rd_en1 = $rs1_valid;
+         $rf_rd_index1[4:0] = $rs1;
+         
+         $rf_rd_en2 = $rs2_valid;
+         $rf_rd_index2[4:0] = $rs2;
+         
+         $src1_value[31:0] = $rf_rd_data1;
+         $src2_value[31:0] = $rf_rd_data2;
+         `BOGUS_USE($src1_value $src2_value)
+   
+   // Assert these to end simulation (before Makerchip cycle limit).
+   *passed = *cyc_cnt > 40;
+   *failed = 1'b0;
+   
+   // Macro instantiations for:
+   //  o instruction memory
+   //  o register file
+   //  o data memory
+   //  o CPU visualization
+   |cpu
+      m4+imem(@1)    // Args: (read stage)
+      m4+rf(@1, @1)  // Args: (read stage, write stage) - if equal, no register bypass is required
+      //m4+dmem(@4)    // Args: (read/write stage)
+      //m4+myth_fpga(@0)  // Uncomment to run on fpga
+
+   m4+cpu_viz(@4)    // For visualisation, argument should be at least equal to the last stage of CPU logic. @4 would work for all labs.
+\SV
+   endmodule
+```
+
+code and waveform from macherchip is given below,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b86c0c2f-0031-4b41-b5ac-c2b1f99da25a">
+
+
+
+### Lab for ALU operations for add/addi
+#### Task: Implementation of ALU
+Link for AlU is : ```https://myth.makerchip.com/sandbox/01wfphG9Q/0RghzP#```
+We taken output $src1_value[31:0] and $src2_value[31:0] from register file. now we give this data as an input to ALU block.
+
+<img width="476" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/aa68297d-480c-48a0-ba19-375c50b9f89c">
+
+Now we will write the syntax for addi and add for ALU.
+
+Syntax for add/addi is : ```
+                         $result[31:0] = $is_add ? ($src1_value[31:0] + $src2_value[31:0]) :
+                                         $is_addi ? ($src1_value[31:0] + $imm[31:0]):
+                                         32'b0;
+                         ```    
+
+TL verilog code is given below,
+```
+   m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
+
+   |cpu
+      @0
+         $reset = *reset;
+         $pc[31:0] = >>1$reset ? 32'b0 : (>>1$pc + 32'd4);
+      @1
+         // Instruction Fetch
+         $imem_rd_en = !$reset;
+         $imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2];
+         $instr[31:0] = $imem_rd_en ? $imem_rd_data[31:0] : 32'b0;
+         
+      @1
+         //Instruction Decode
+         $is_i_instr = $instr[6:2] ==? 5'b0000x ||   // ==? is used to compare the binary don't cares
+                       $instr[6:2] ==? 5'b001x0 ||
+                       $instr[6:2] ==? 5'b11001 ||
+                       $instr[6:2] ==? 5'b11100;
+         
+         $is_u_instr = $instr[6:2] ==? 5'b0x101;
+         
+         $is_r_instr = $instr[6:2] ==? 5'b01011 ||
+                       $instr[6:2] ==? 5'b011x0 ||
+                       $instr[6:2] ==? 5'b10100;
+         
+         $is_b_instr = $instr[6:2] ==? 5'b11000;
+         
+         $is_j_instr = $instr[6:2] ==? 5'b11011;
+         
+         $is_s_instr = $instr[6:2] ==? 5'b0100x;
+         
+         $imm[31:0] = $is_i_instr ? {{21{$instr[31]}}, $instr[30:20]} :
+                      $is_s_instr ? {{21{$instr[31]}}, $instr[30:25], $instr[11:7]} :
+                      $is_b_instr ? {{20{$instr[31]}}, $instr[7], $instr[30:25], $instr[11:8], 1'b0} :
+                      $is_u_instr ? {$instr[31:12], 12'b0} :
+                      $is_j_instr ? {{12{$instr[31]}}, $instr[19:12], $instr[20], $instr[30:21], 1'b0} :
+                                    32'b0;
+         $opcode[6:0] = $instr[6:0];
+         
+         $rs2_valid = $is_r_instr || $is_s_instr || $is_b_instr;
+         ?$rs2_valid
+            $rs2[4:0] = $instr[24:20];
+            
+         $rs1_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
+         ?$rs1_valid
+            $rs1[4:0] = $instr[19:15];
+         
+         $funct3_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
+         ?$funct3_valid
+            $funct3[2:0] = $instr[14:12];
+            
+         $funct7_valid = $is_r_instr ;
+         ?$funct7_valid
+            $funct7[6:0] = $instr[31:25];
+            
+         $rd_valid = $is_r_instr || $is_i_instr || $is_u_instr || $is_j_instr;
+         ?$rd_valid
+            $rd[4:0] = $instr[11:7];
+            
+         $dec_bits[10:0] = {$funct7[5], $funct3, $opcode};
+         $is_beq = $dec_bits ==? 11'bx_000_1100011;
+         $is_bne = $dec_bits ==? 11'bx_001_1100011;
+         $is_blt = $dec_bits ==? 11'bx_100_1100011;
+         $is_bge = $dec_bits ==? 11'bx_101_1100011;
+         $is_bltu = $dec_bits ==? 11'bx_110_1100011;
+         $is_bgeu = $dec_bits ==? 11'bx_111_1100011;
+         $is_addi = $dec_bits ==? 11'bx_000_0010011;
+         $is_add = $dec_bits ==? 11'b0_000_0110011;
+         `BOGUS_USE($is_beq $is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
+      //`BOGUS_USE is a system verilog signgle argument macro to silence the warning is assigned but never used.
+         
+      @1
+         //Register File Read
+         
+         $rf_rd_en1 = $rs1_valid;
+         $rf_rd_index1[4:0] = $rs1;
+         
+         $rf_rd_en2 = $rs2_valid;
+         $rf_rd_index2[4:0] = $rs2;
+         
+         $src1_value[31:0] = $rf_rd_data1;
+         $src2_value[31:0] = $rf_rd_data2;
+      @1
+         //ALU Implementation
+         $result[31:0] = $is_add ? ($src1_value[31:0] + $src2_value[31:0]) :
+                         $is_addi ? ($src1_value[31:0] + $imm[31:0]):
+                         32'b0;
+         `BOGUS_USE($result)
+   
+   // Assert these to end simulation (before Makerchip cycle limit).
+   *passed = *cyc_cnt > 40;
+   *failed = 1'b0;
+   
+   // Macro instantiations for:
+   //  o instruction memory
+   //  o register file
+   //  o data memory
+   //  o CPU visualization
+   |cpu
+      m4+imem(@1)    // Args: (read stage)
+      m4+rf(@1, @1)  // Args: (read stage, write stage) - if equal, no register bypass is required
+      //m4+dmem(@4)    // Args: (read/write stage)
+      //m4+myth_fpga(@0)  // Uncomment to run on fpga
+
+   m4+cpu_viz(@4)    // For visualisation, argument should be at least equal to the last stage of CPU logic. @4 would work for all labs.
+\SV
+   endmodule
+```
+
+code and waveform from mackerchip is given below,
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/81f767e0-d766-4633-8306-794661a6e475">
+
+
+### Lab for register file write
