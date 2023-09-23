@@ -52,7 +52,7 @@
       - [Lab on 2-Cycle Calculator](#Lab-on-2-Cycle-Calculator)
 
     + [Validity](#Validity)
-      - [Introduction to Validity and it's advantages](#Introduction-to-Validity-and-it's-advantages)
+      - [Introduction to Validity and its advantages](#Introduction-to-Validity-and-its-advantages)
       - [Lab on Validity and valid when condition](#Lab-on-Validity-and-valid-when-condition)
       - [Lab to commpute total distance](#Lab-to-commpute-total-distance)
       - [Lab on 2-Cycle Calculator with validity](#Lab-on-2-Cycle-Calculator)
@@ -941,7 +941,7 @@ Code and waveform from mackerchip is given below,
 
 
 ## Validity
-### Introduction to Validity and it's advantages
+### Introduction to Validity and its advantages
 #### Validity
 In TL-Verilog (Transaction-Level Verilog), "validity" refers to a concept related to the state of a transaction or data transfer. In transaction-level modeling, you often have data that needs to be transferred from one block or module to another, and it's important to track whether the data is valid or not.
 
