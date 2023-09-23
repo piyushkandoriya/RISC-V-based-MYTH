@@ -2164,5 +2164,5 @@ Block diagram from mackerchip is given below,
 Waveform from mackerchip is given below,
 Finally, here we are getting 45 as a result.
 
-![image](https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/65ccf25c-d363-40c3-977d-d3cda44ddaa5)
+<img width="960" alt="Screenshot 2023-09-24 025859" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/0d3f7bb6-8016-4112-bd88-dad3706626d7">
 
