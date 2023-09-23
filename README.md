@@ -74,6 +74,7 @@
       - [Labs to decode other fields of instruction for RV-ISBUJ](#Labs-to-decode-other-fields-of-instruction-for-RV-ISBUJ)
       - [Labs to decode instruction field based on Instr type RV-ISBUJ](#Labs-to-decode-instruction-field-based-on-Instr-type-RV-ISBUJ)
       - [Labs to decode individual instruction](#Labs-to-decode-individual-instruction)
+      - [Labs of complete instruction decode](#Labs-of-complete-instruction-decode)
         
     + [RISC-V control logic](#RISC-V-control-logic)
       - [Lab for register file read part-1(USE UPDATED SHELL CODE)](#Lab-for-register-file-read-part-1(USE-UPDATED-SHELL-CODE))
@@ -1395,3 +1396,132 @@ Let's extract the other file like $func7,$fuct3,$rs1, $rs1,$rd and $opcode.
 <img width="565" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/0f04993d-90c0-4693-be1f-0f458470b538">
 
 ### Labs to decode instruction field based on Instr type RV-ISBUJ
+In upper table we can see that "rs2" is needed only in R,S and B type intruction. So for the we have to create valid condition.
+
+<img width="499" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f400b397-af72-4d01-9a1c-da64824dfdad">
+
+This valid bit syntax is: ```$rs2_valid = $is_r_instr || $is_s_instr || $is_b_instr;
+                          ?$rs2_valid      
+                           $rs2[4:0] = $instr[24:20];      
+                          ``` 
+
+
+### Labs to decode individual instruction
+Here we are just decoding the relevent instruction in our perticular test program.
+
+<img width="356" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/f2f5b2c8-96b8-4bba-b59a-5d7f8d52cad4">
+
+Here we can see the use of "$func7" , "$func3" and opcode.
+
+Let's see the example of instruction "BEQ"
+
+<img width="214" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b0e644d0-c91c-4f4e-9722-408d182ac147">
+
+### Labs of complete instruction decode
+Link of instruction decode is : ```https://myth.makerchip.com/sandbox/01wfphG9Q/0GZhQL```
+
+TL verilog code for Instruction decode is given below,
+```
+   m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
+
+   |cpu
+      @0
+         $reset = *reset;
+         $pc[31:0] = >>1$reset ? 32'b0 : (>>1$pc + 32'd4);
+      @1
+         // Instruction Fetch
+         $imem_rd_en = !$reset;
+         $imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2];
+         $instr[31:0] = $imem_rd_data[31:0];
+      ?$imem_rd_en
+         @1
+            $imem_rd_data[31:0] = /imem[$imem_rd_addr]$instr;
+      @1
+         //Instruction Decode
+         $is_i_instr = $instr[6:2] ==? 5'b0000x ||   // ==? is used to compare the binary don't cares
+                       $instr[6:2] ==? 5'b001x0 ||
+                       $instr[6:2] ==? 5'b11001 ||
+                       $instr[6:2] ==? 5'b11100;
+         
+         $is_u_instr = $instr[6:2] ==? 5'b0x101;
+         
+         $is_r_instr = $instr[6:2] ==? 5'b01011 ||
+                       $instr[6:2] ==? 5'b011x0 ||
+                       $instr[6:2] ==? 5'b10100;
+         
+         $is_b_instr = $instr[6:2] ==? 5'b11000;
+         
+         $is_j_instr = $instr[6:2] ==? 5'b11011;
+         
+         $is_s_instr = $instr[6:2] ==? 5'b0100x;
+         
+         $imm[31:0] = $is_i_instr ? {{21{$instr[31]}}, $instr[30:20]} :
+                      $is_s_instr ? {{21{$instr[31]}}, $instr[30:25], $instr[11:7]} :
+                      $is_b_instr ? {{20{$instr[31]}}, $instr[7], $instr[30:25], $instr[11:8], 1'b0} :
+                      $is_u_instr ? {$instr[31:12], 12'b0} :
+                      $is_j_instr ? {{12{$instr[31]}}, $instr[19:12], $instr[20], $instr[30:21], 1'b0} :
+                                    32'b0;
+         $opcode[6:0] = $instr[6:0];
+         
+         $rs2_valid = $is_r_instr || $is_s_instr || $is_b_instr;
+         ?$rs2_valid
+            $rs2[4:0] = $instr[24:20];
+            
+         $rs1_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
+         ?$rs1_valid
+            $rs1[4:0] = $instr[19:15];
+         
+         $funct3_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
+         ?$funct3_valid
+            $funct3[2:0] = $instr[14:12];
+            
+         $funct7_valid = $is_r_instr ;
+         ?$funct7_valid
+            $funct7[6:0] = $instr[31:25];
+            
+         $rd_valid = $is_r_instr || $is_i_instr || $is_u_instr || $is_j_instr;
+         ?$rd_valid
+            $rd[4:0] = $instr[11:7];
+            
+         $dec_bits [10:0] = {$funct7[5], $funct3, $opcode};
+         $is_beq = $dec_bits ==? 11'bx_000_1100011;
+         $is_bne = $dec_bits ==? 11'bx_001_1100011;
+         $is_blt = $dec_bits ==? 11'bx_100_1100011;
+         $is_bge = $dec_bits ==? 11'bx_101_1100011;
+         $is_bltu = $dec_bits ==? 11'bx_110_1100011;
+         $is_bgeu = $dec_bits ==? 11'bx_111_1100011;
+         $is_addi = $dec_bits ==? 11'bx_000_0010011;
+         $is_add = $dec_bits ==? 11'b0_000_0110011;
+   `BOGUS_USE($is_beq $is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
+      //`BOGUS_USE is a system verilog signgle argument macro to silence the warning is assigned but never used.
+      
+   
+   // Assert these to end simulation (before Makerchip cycle limit).
+   *passed = *cyc_cnt > 40;
+   *failed = 1'b0;
+   
+   // Macro instantiations for:
+   //  o instruction memory
+   //  o register file
+   //  o data memory
+   //  o CPU visualization
+   |cpu
+      m4+imem(@1)    // Args: (read stage)
+      //m4+rf(@1, @1)  // Args: (read stage, write stage) - if equal, no register bypass is required
+      //m4+dmem(@4)    // Args: (read/write stage)
+      //m4+myth_fpga(@0)  // Uncomment to run on fpga
+
+   m4+cpu_viz(@4)    // For visualisation, argument should be at least equal to the last stage of CPU logic. @4 would work for all labs.
+\SV
+   endmodule
+
+```
+
+Code and block diagram from mackerchip is given below,
+
+<img width="953" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/dd22397d-854b-4838-862b-bdce4fb2d1f0">
+
+
+
+## RISC-V control logic
+### Lab for register file read part-1(USE UPDATED SHELL CODE)
