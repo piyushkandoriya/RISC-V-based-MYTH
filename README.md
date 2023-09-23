@@ -1,7 +1,7 @@
 # **RISC-V-based-MYTH**
 # Contents 
 
-* [Day 1 -Introduction to RISC-V ISA and GNU compiler toolchain](#Day-1-Introductionto-RISC_V-ISA(instruction-set-architecture)-and-GNU-compiler-toolchain)
+* [Day 1 -Introduction to RISC_V ISA and GNU compiler toolchain](#Day-1-Introductionto-RISC_V-ISA(instruction-set-architecture)-and-GNU-compiler-toolchain)
     + [Introduction to RISC-V basic Keywords](#Introduction-to-RISC-V-basic-keywords)
       - [introduction](#introduction)
       - [From apps to Hardware](#From-Apps-to-Hardware)
@@ -22,7 +22,7 @@
     + [Application Binary Interface](#Application-Binary-Interface)
       - [Introduction to Application Binary Interface](#Introduction-to-Application-Binary-Interface)
       - [Memory allocation for Double word](#Memory-allocation-for-Double-word)
-      - [Load, Add and Store instructions with example](#Load-Add-and-Store-instructions-with-example)
+      - [Load Add and Store instructions with example](#Load-Add-and-Store-instructions-with-example)
       - [Concluding 32-Registers and Their respective ABI names](#Concluding-32--Registers-and-Their-respective-ABI-names)
  
     + [Lab work using ABI function calls](#Lab-work-usin-ABI-function-calls)
