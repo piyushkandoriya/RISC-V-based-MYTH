@@ -1417,7 +1417,7 @@ Let's see the example of instruction "BEQ"
 <img width="214" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b0e644d0-c91c-4f4e-9722-408d182ac147">
 
 ### Labs of complete instruction decode
-Link of instruction decode is : ```https://myth.makerchip.com/sandbox/01wfphG9Q/0NxhGw#```
+Link of instruction decode is : ```https://myth.makerchip.com/sandbox/01wfphG9Q/0Y6h41#```
 
 TL verilog code for Instruction decode is given below,
 ```
@@ -1514,7 +1514,8 @@ TL verilog code for Instruction decode is given below,
 
 Code and block diagram from mackerchip is given below,
 
-<img width="959" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ed13229d-a980-4312-ab1a-7025218c63dd">
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ae1d8a0a-a909-4353-b13f-eea2721bab3e">
+
 
 
 
