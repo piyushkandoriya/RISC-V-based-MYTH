@@ -34,7 +34,7 @@
       - [Lab to run C- program using RISC_V CPU](#Lab-to-run-C--program-using-RISC_V-CPU)
      
 
-* [Day 3 -Digital Logic with TL-verilog and Makerchip](#Day-3--Digital-Logic-with-TL-verilog-and-Makerchip)
+* [Day 3 -Digital Logic with TL verilog and Makerchip](#Day-3--Digital-Logic-with-TL-verilog-and-Makerchip)
     + [Combinational logic in TL verilog using Makerchip](#Combinational-logic-in-TL-verilog-using-Makerchip)
       - [Introduction to logic gates](#Introduction-to-logic-gates)
       - [Basic Mux implimentation and introduction to Makerchip](#Basic-Mux-implimentation-and-introduction-to-Makerchip)
@@ -532,7 +532,7 @@ Now we will build the RISC_V CPU in transister level verilog from srecth in Day_
 
 
 
-# Day 3 -Digital Logic with TL-verilog and Makerchip
+# Day 3 -Digital Logic with TL verilog and Makerchip
 ## Combinational logic in TL verilog using Makerchip
 ### Introduction to logic gates
 Truth table and boolean function of different logic gates
