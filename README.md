@@ -60,7 +60,7 @@
 
     + [Wrap up](#Wrap-up)
 
- * [Day 4 -Basic RISC-V CPU Micro-architecture](#Day-4-Basic-RISC-V-CPU-Micro-architecture)
+ * [Day 4 -Basic RISC-V CPU Micro-architecture](#Day-4--Basic-RISC-V-CPU-Micro-architecture)
     + [Introduction to simple RISC-V Micro-architecture](#Introduction-to-simple-RISC-V-Micro-architecture)
       - [Micro-architecture of single cycle RISC-V CPU](#Micro-architecture-of-single-cycle-RISC-V-CPU)
       - [Starting point code for RISC-V labs part-1](#Starting-point-code-for-RISC-V-labs-part-1)
