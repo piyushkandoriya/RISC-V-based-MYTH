@@ -84,8 +84,8 @@
       - [Concept of Array and Register file details](#Concept-of-Array-and-Register-file-details)
       - [Labs for Implementing branch instructions](#Labs-for-Implementin-branch-instructions)
       - [Labs for complementing branch instructions implementaion](#Labs-for-complementing-branch-instructions-implementaion)
-      - [Full RISC-V architecture](#Full-RISC-V-architecture)
-      - [Lab to create simple Testbench](#Lab-to-create-simple-Testbench)
+      - [Full RISC-V architecture with testbench](#Full-RISC-V-architecture-with-testbench)
+      
 
 * [Day 5 -Complete pipelined RISC-V CPU micro-architecture](#Day-5-Complete-pipelined-RISC-V-CPU-micro-architecture)
     + [Pipelining the CPU](#Pipelining-the-CPU)
@@ -1992,8 +1992,8 @@ Code and block diagram from mackerchip is given below,
 
 <img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/2a11cdc0-6878-4a52-89b0-8c6e21a73cc3">
 
-### Full RISC-V architecture
-Link of full RISC-V architecture is: "https://myth.makerchip.com/sandbox/01wfphG9Q/0vgh3m"
+### Full RISC-V architecture with testbench
+Link of full RISC-V architecture is: "https://myth.makerchip.com/sandbox/01wfphG9Q/0k5hQO"
 
 TL verilog code for RISC-V architecture is given below,
 ```verilog
@@ -2039,13 +2039,12 @@ TL verilog code for RISC-V architecture is given below,
    |cpu
       @0
          $reset = *reset;
-         $pc[31:0] = >>1$reset ? 32'b0 : (>>1$taken_branch ? >>1$br_tgt_pc :  (>>1$pc+32'd4));
+         $pc[31:0] = >>1$reset ? 32'd0 : (>>1$taken_branch ? >>1$br_tgt_pc :  (>>1$pc+32'd4));
       @1
          // Instruction Fetch
          $imem_rd_en = !$reset;
-         $imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2];
-         $instr[31:0] = $imem_rd_en ? $imem_rd_data[31:0] : 32'b0;
-         
+         $imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2];     // $imem_rd_addr is going to m4+imem(@1) vinding the vakue of that address    
+         $instr[31:0] = $imem_rd_en ? $imem_rd_data[31:0]: 32'b0;             // and returning it in $imem_rd_data[31:0]
       @1
          //Instruction Decode
          $is_i_instr = $instr[6:2] ==? 5'b0000x ||   // ==? is used to compare the binary don't cares
@@ -2102,33 +2101,28 @@ TL verilog code for RISC-V architecture is given below,
          $is_bgeu = $dec_bits ==? 11'bx_111_1100011;
          $is_addi = $dec_bits ==? 11'bx_000_0010011;
          $is_add = $dec_bits ==? 11'b0_000_0110011;
-         `BOGUS_USE($is_beq $is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
-      //`BOGUS_USE is a system verilog signgle argument macro to silence the warning is assigned but never used.
-         
       @1
          //Register File Read
-         
          $rf_rd_en1 = $rs1_valid;
          $rf_rd_index1[4:0] = $rs1;  //m4+rf(@1, @1) takes input $rf_rd_index1[4:0] (which is index value of register of RISC-V)
                                      // and return its value as $rf_rd_data1 of 32 bit, which is the value stored in that register
          $rf_rd_en2 = $rs2_valid;
-         $rf_rd_index2[4:0] = $rs2;  //m4+rf(@1, @1) takes input $rf_rd_index1[4:0] (which is index value of register of RISC-V)
-                                     // and return its value as $rf_rd_data2 of 32 bit, which is the value stored in that registe
-         
+         $rf_rd_index2[4:0] = $rs2;   //m4+rf(@1, @1) takes input $rf_rd_index1[4:0] (which is index value of register of RISC-V)
+                                     // and return its value as $rf_rd_data2 of 32 bit, which is the value stored in that register
          $src1_value[31:0] = $rf_rd_data1;
          $src2_value[31:0] = $rf_rd_data2;
       @1
-         //ALU Implementation
-         $result[31:0] = $is_add ? ($src1_value[31:0] + $src2_value[31:0]) :
-                         $is_addi ? ($src1_value[31:0] + $imm[31:0]):
-                         32'b0;
+         //ALU
+         $result[31:0] = $is_addi ? $src1_value + $imm :
+                         $is_add ? $src1_value + $src2_value :
+                         32'bx ;
       @1
-         // Register write back
-         $rf_wr_en = $rd_valid && $rd != 5'b0;
+         //Register File Write                  // $rd_valid = 1 when ISA have rd its instruction 
+         $rf_wr_en = $rd_valid && $rd != 5'b0;  // if $rd_valid =0 or $rd =0 then then $rf_wr_en is 0
          $rf_wr_index[4:0] = $rd;                              // $rd=0(because x0 register of RISC-V always stores vale 32'b0 so can't be rewritten ) 
-         $rf_wr_data[31:0] = $result[31:0];
-      @1 
-         // branch taken implementation
+         $rf_wr_data[31:0] = $result;       // $result is coming from ALU and getting stored in $rf_wr_index[4:0] address of RISC-V register         
+                                            // having value $rf_wr_data   
+      @1
          //Branch Instructions
          $taken_branch = $is_beq ? ($src1_value == $src2_value):               //BEQ (Branch if Equal)
                          $is_bne ? ($src1_value != $src2_value):               //BNE (Branch if Not Equal)  
@@ -2136,11 +2130,10 @@ TL verilog code for RISC-V architecture is given below,
                          $is_bge ? (($src1_value >= $src2_value) ^ ($src1_value[31] != $src2_value[31])):   //BGE (Branch if Greater Than or Equal)
                          $is_bltu ? ($src1_value < $src2_value):              //BLTU (Branch if Less Than Unsigned)
                          $is_bgeu ? ($src1_value >= $src2_value):             //BGEU (Branch if Greater Than or Equal Unsigned)
-                                    1'b0;
-         
+                                    1'b0;                 
          $br_tgt_pc[31:0] = $pc + $imm;
    // Assert these to end simulation (before Makerchip cycle limit).
-   *passed = *cyc_cnt > 40;
+   *passed = |cpu/xreg[10]>>5$value == (1+2+3+4+5+6+7+8+9);
    *failed = 1'b0;
    
    // Macro instantiations for:
@@ -2159,4 +2152,17 @@ TL verilog code for RISC-V architecture is given below,
    endmodule
 ```
 
-<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/6977a496-219a-4710-a8ff-a580d6dde69b">
+Code from mackerchip is given below,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/8c71d51e-a6b7-499b-8453-a502e683b30c">
+
+Block diagram from mackerchip is given below,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/dd3892ad-e877-4eea-9e9e-06977f91ed7e">
+
+
+Waveform from mackerchip is given below,
+Finally, here we are getting 45 as a result.
+
+![image](https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/65ccf25c-d363-40c3-977d-d3cda44ddaa5)
+
