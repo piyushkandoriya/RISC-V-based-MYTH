@@ -1174,4 +1174,97 @@ code and waveform from mackerchip is given below,
 # Day 4 -Basic RISC-V CPU Micro-architecture
 ## Introduction to simple RISC-V Micro-architecture
 ### Micro-architecture of single cycle RISC-V CPU
+Basic Block diagram (micro-architecture) of RISC-v CPU is given below,
 
+<img width="390" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/cc734131-013a-479e-9057-2b5479f3357d">
+
+Lets see every component one by one.
+
+#### (1) PC (program counter)
+A Program Counter (PC), also known as an Instruction Pointer (IP) in some architectures, is a special-purpose register or hardware component used in computer processors to keep track of the address of the next instruction to be executed in a program. It plays a crucial role in the execution of instructions in a computer's CPU.
+
+#### (2) Instruction memory
+Instruction memory, also known as the instruction cache or instruction memory unit, is a component within the central processing unit (CPU) of a computer that is responsible for storing and providing access to the instructions that the CPU needs to execute a program. It is a fundamental part of the CPU's architecture and plays a key role in the execution of computer programs.
+
+#### (3) Instruction decoder
+An Instruction Decoder is a critical component within the CPU of a computer. Its primary function is to interpret and decode the machine instructions fetched from memory and prepare them for execution by the CPU's execution units. It decodes the binary representation of the instruction and generates control signals that govern the operation of other components in the CPU to execute the instruction.
+
+#### (4) Register file read (RF Rd)
+RF RD is a component that stores a set of registers used to hold data during the execution of instructions. Instructions often involve reading data from these registers. The instruction specifies which registers to read, and the data from these registers can be used as operands for operations performed by the ALU or other components.
+
+#### (5) Register file write (RF Wr)
+The write register file is responsible for storing the results of operations back into registers. After an instruction is executed, the result is often written back to the register file. This ensures that the updated data is available for subsequent instructions.
+
+#### (6) Data memory 
+The data memory is a storage component used to store data that is manipulated by instructions during program execution. Unlike instruction memory, data memory can be both read from and written to. It holds variables, data arrays, and other information that the program uses during its execution.
+
+#### (7) ALU
+The ALU is a fundamental digital circuit within the CPU that performs arithmetic and logical operations on data. It can perform tasks such as addition, subtraction, multiplication, division, bitwise operations (AND, OR, XOR), and comparisons. The ALU generates results that are used in various computations specified by the instructions.
+
+
+### Starting point code for RISC-V labs part-1
+
+Vedio Link for this stages : ```https://myth.makerchip.com/sandbox?code_url=https:%2F%2Fraw.githubusercontent.com%2Fstevehoover%2FRISC-V_MYTH_Workshop%2Fmaster%2Frisc-v_shell.tlv#```
+
+Code link for this stages : ```https://myth.makerchip.com/sandbox?code_url=https:%2F%2Fraw.githubusercontent.com%2Fstevehoover%2FRISC-V_MYTH_Workshop%2Fmaster%2Frisc-v_shell.tlv#```
+
+If we go there and make comment off (example, remove the "//") then in diagram we will see the step by step changes.
+
+
+### Starting point code for RISC-V labs part-2
+
+Link of reference solution : ```https://myth.makerchip.com/sandbox?code_url=https:%2F%2Fraw.githubusercontent.com%2Fstevehoover%2FRISC-V_MYTH_Workshop%2Fmaster%2Freference_solutions.tlv#```
+
+In this reference solution we can see the total block diagram of RISC-V and also see the visulization of RISC-V.
+
+
+## Fetch and decode
+### Implementation plan and lab for PC
+#### Implementation plan
+The implementation plan of RISC-v in pipeline like this,
+
+<img width="314" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/87e6aacd-c731-4830-a78d-75f75ce354e6">
+
+In 3 stage we will implement this RISC-V. We will implement RISC-V CPU in the sequence of given number in above plan. like (PC) >> (IMemRd) >> (Dec) >> (RF Rd) >> (ALU) >> (RF Rw) >> (Branch Target computation)
+
+#### Task: Reset the $pc[31:0] to 0 if previous instruction was a "reset instruction"(>>1$reset), and increment by 1 instruction (32'd4 bytes) thereafter(means current instruction is to add 4 in Previous value of PC). ```NOte``` we will add branch support letter. till now just PC for next instruction.  
+We have to write the code in ```https://myth.makerchip.com/sandbox?code_url=https:%2F%2Fraw.githubusercontent.com%2Fstevehoover%2FRISC-V_MYTH_Workshop%2Fmaster%2Frisc-v_shell.tlv#```
+
+
+<img width="375" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/99a9cb62-d824-4d09-a25d-17f3fea7f434">
+
+Link for PC next is: ```https://myth.makerchip.com/sandbox/01wfphG9Q/0JZhOK``` 
+
+TL verilog code for PC is given below,
+```
+    m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
+
+   |cpu
+      @0
+         $reset = *reset;
+
+
+
+         $pc[31:0] = >>1$reset ? 32'd0 : (>>1$pc + 32'd4);
+
+      // Note: Because of the magic we are using for visualisation, if visualisation is enabled below,
+      //       be sure to avoid having unassigned signals (which you might be using for random inputs)
+      //       other than those specifically expected in the labs. You'll get strange errors for these.
+
+   
+   // Assert these to end simulation (before Makerchip cycle limit).
+   *passed = *cyc_cnt > 40;
+   *failed = 1'b0;
+   
+```
+
+Block diagram and waveform from mackerchip,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/31fd6db3-79ca-4214-8e3a-fdce377caaad">
+
+
+After the simulation, here we can see that the "$pc[31:0]" become 0,4,8...
+
+
+### Labs for intruction Fetch logic
+#### Task : Instruction fetch
