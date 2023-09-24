@@ -2254,7 +2254,7 @@ Here we can see the same output signal as we saw upper.
 
 
 ### Lab to code 3-Cycle RISC-V to take care of invalid Cycles
-Link for 3-cycle RISC-V is : ```https://myth.makerchip.com/sandbox/0rkfAhzM5/0zmh2v#```
+Link for 3-cycle RISC-V is : ```https://myth.makerchip.com/sandbox/0rkfAhzM5/0nZh0l#```
 
 <img width="523" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/a4e280fe-7215-45fa-bf94-e74193322741">
 
@@ -2387,6 +2387,11 @@ TL verilog code for 3-cycle RISC-V is given below,
 ```
 
 
+### Lab to code complete ALU
+<img width="551" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/12663035-d2ce-4edd-b6e1-3905be2446d9">
 
+Next step here is to distribute the stages as we want in the pipeline.
+
+For that we have to modify the RF like "m4+rf (@2,@3)" means register will read after @2 clock and write back after @3 clock. we have to set write back by >>2 because 1 stage is between both now.
 
 
