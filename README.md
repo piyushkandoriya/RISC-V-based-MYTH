@@ -2257,7 +2257,7 @@ Here we can see the same output signal as we saw upper.
 
 
 ### Lab to code 3-Cycle RISC-V to take care of invalid Cycles
-Link for 3-cycle RISC-V is : ```https://myth.makerchip.com/sandbox/0rkfAhzM5/0pghrA```
+Link for 3-cycle RISC-V is : ```https://myth.makerchip.com/sandbox/0rkfAhzM5/0Z4hZg#```
 
 <img width="523" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/a4e280fe-7215-45fa-bf94-e74193322741">
 
@@ -2265,23 +2265,65 @@ Here we have to take care of things like,
 
 <img width="535" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/79c186a4-1825-4475-ae3e-ea6f660f53ac">
 
+Here we have to avoid Writing in RF during invalid clock. for that we have to introduce $rf_wr_en = $valid && $rf_wr_en1; where $rf_wr_en1 =$rd_valid && $rd != 5'b0; (if $rd_valid =0 or $rd =0 then then $rf_wr_en1 is 0). Here we are changing $rf_wr_en to $rf_wr_en1 because bydefault $rf_wr_en is given to RF. so we have to take other variable.
 
+Next step is to avoid PC to redirecting during invalid instruction(Invalid instruction=instruction at invalid signal). to to that we have to create signal called $valid_taken_br = $valid && $taken_br . means when valid signal will come at that time only branch insruction will perform and update the PC with calculated traget address. For this signal we give to PC mux to control the  PC mux.
 
+In last step we have to update PC instruction by >>3.
 
 TL verilog code for 3-cycle RISC-V is given below,
 ```verilog
+   \m4_TLV_version 1d: tl-x.org
+\SV
+   // This code can be found in: https://github.com/stevehoover/RISC-V_MYTH_Workshop
+   
+   m4_include_lib(['https://raw.githubusercontent.com/BalaDhinesh/RISC-V_MYTH_Workshop/master/tlv_lib/risc-v_shell_lib.tlv'])
+
+\SV
+   m4_makerchip_module   // (Expanded in Nav-TLV pane.)
+\TLV
+
+   // /====================\
+   // | Sum 1 to 9 Program |
+   // \====================/
+   //
+   // Program for MYTH Workshop to test RV32I
+   // Add 1,2,3,...,9 (in that order).
+   //
+   // Regs:
+   //  r10 (a0): In: 0, Out: final sum
+   //  r12 (a2): 10
+   //  r13 (a3): 1..10
+   //  r14 (a4): Sum
+   // 
+   // External to function:
+   m4_asm(ADD, r10, r0, r0)             // Initialize r10 (a0) to 0.
+   // Function:
+   m4_asm(ADD, r14, r10, r0)            // Initialize sum register a4 with 0x0
+   m4_asm(ADDI, r12, r10, 1010)         // Store count of 10 in register a2.
+   m4_asm(ADD, r13, r10, r0)            // Initialize intermediate sum register a3 with 0
+   // Loop:
+   m4_asm(ADD, r14, r13, r14)           // Incremental addition
+   m4_asm(ADDI, r13, r13, 1)            // Increment intermediate register by 1
+   m4_asm(BLT, r13, r12, 1111111111000) // If a3 is less than a2, branch to label named <loop>
+   m4_asm(ADD, r10, r14, r0)            // Store final result to register a0 so that it can be read by main program
+   
+   // Optional:
+   // m4_asm(JAL, r7, 00000000000000000000) // Done. Jump to itself (infinite loop). (Up to 20-bit signed immediate plus implicit 0 bit (unlike JALR) provides byte address; last immediate bit should also be 0)
+   m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
+
    |cpu
       @0
          $reset = *reset;
-         $start = (>>1$reset && !$reset) ;
-         $valid = $reset ?  1'b0 : ($start || >>3$valid ); 
-         $valid_taken_br = ($valid && >>3$taken_branch) ;
-         $pc[31:0] = >>1$reset ? 32'd0 : (>>3$valid_taken_br ? >>3$br_tgt_pc :  (>>1$pc+32'd4));
+         $start = (>>1$reset && !$reset);
+         $valid = $reset ?  1'b0 : ($start || >>3$valid );   // to generate valid signal after every third clock
+         
+         $pc[31:0] = >>1$reset ? 32'd0 : (>>3$valid_taken_branch ? >>3$br_tgt_pc :  (>>3$pc+32'd4));
       @1
          // Instruction Fetch
-         $imem_rd_en = !$reset && >>1$valid;
+         $imem_rd_en = !$reset;
          $imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2];     // $imem_rd_addr is going to m4+imem(@1) vinding the vakue of that address    
-         $instr[31:0] = $imem_rd_en ? $imem_rd_data[31:0]: 32'b0;    
+         $instr[31:0] = $imem_rd_en ? $imem_rd_data[31:0]: 32'b0;             // and returning it in $imem_rd_data[31:0]
       @1
          //Instruction Decode
          $is_i_instr = $instr[6:2] ==? 5'b0000x ||   // ==? is used to compare the binary don't cares
@@ -2355,7 +2397,8 @@ TL verilog code for 3-cycle RISC-V is given below,
                          32'bx ;
       @1
          //Register File Write                  // $rd_valid = 1 when ISA have rd its instruction 
-         $rf_wr_en = $rd_valid && $rd != 5'b0;  // if $rd_valid =0 or $rd =0 then then $rf_wr_en is 0
+         $rf_wr_en1 = $rd_valid && $rd != 5'b0;  // if $rd_valid =0 or $rd =0 then then $rf_wr_en1 is 0
+         $rf_wr_en = $valid && $rf_wr_en1;   //to stop the writing during invalid instruction
          $rf_wr_index[4:0] = $rd;                              // $rd=0(because x0 register of RISC-V always stores vale 32'b0 so can't be rewritten ) 
          $rf_wr_data[31:0] = $result;       // $result is coming from ALU and getting stored in $rf_wr_index[4:0] address of RISC-V register         
                                             // having value $rf_wr_data   
@@ -2369,8 +2412,9 @@ TL verilog code for 3-cycle RISC-V is given below,
                          $is_bgeu ? ($src1_value >= $src2_value):             //BGEU (Branch if Greater Than or Equal Unsigned)
                                     1'b0;                 
          $br_tgt_pc[31:0] = $pc + $imm;
+         $valid_taken_branch = ($valid && $taken_branch);   //To invalid the branch taken during invalid instruction or invalid clock
    // Assert these to end simulation (before Makerchip cycle limit).
-   *passed = *cyc_cnt > 40;
+   *passed = |cpu/xreg[10]>>5$value == (1+2+3+4+5+6+7+8+9);
    *failed = 1'b0;
    
    // Macro instantiations for:
