@@ -100,8 +100,8 @@
       - [Lab to complete instruction decode except Fence and Ecell and Ebreak](#Lab-to-complete-instruction-decode-except-Fence-and-Ecell-and-Ebreak)
       - [Lab to code complete ALU](#Lab-to-code-complete-ALU)
         
-    + [Load/Store Instructions and completing RISC-V CPU](#Load/Store-Instructions-and-completing-RISC-V-CPU)
-      - [Intriduction to load/store instruction and lab to Redirect loads](#Intriduction-to-load/store-instruction-and-lab-to-Redirect-loads)
+    + [Load and Store Instructions and completing RISC-V CPU](#Load-and-Store-Instructions-and-completing-RISC-V-CPU)
+      - [Intriduction to load and store instruction and lab to Redirect loads](#Intriduction-to-load-and-store-instruction-and-lab-to-Redirect-loads)
       - [Lab to load data from memory to register file](#Lab-to-load-data-from-memory-to-register-file)
       - [Lab to instantiate data memory to register file](#Lab-to-instantiate-data-memory-to-register-file)
       - [Lab for add, stores and load to the test program](#Lab-for-add,-stores-and-load-to-the-test-program)
@@ -2441,6 +2441,156 @@ To implement it we have to do some modification like this given below instructio
 
 
 ### Lab to complete instruction decode except Fence and Ecell and Ebreak
+Till now we write the code to decode only subset instructions. Now lets decode other remaining instructions also.
+
+Here we are not going to implement some instrcution from RV32I are Fence, Ecell and Ebreak.
+
+Here we will treat all load instruction equally and will generate $is_load based on opcode only.(no required $func3 to generate $is_load operation). so we have to complete the code with other instructions also.
+
+<img width="349" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/53de0571-59e0-4f33-a0a1-c74da0239b37">
+
+TL verilog code for other instruction is given below,
+
+```verilog
+@1
+         $instr[31:0] = $imem_rd_data[31:0]; 
+               
+          //Instructions type decode 
+         $is_i_instr = $instr[6:2] ==? 5'b0000x || 
+                       $instr[6:2] ==? 5'b001x0 || 
+                       $instr[6:2] ==? 5'b11001 ;
+         $is_r_instr = $instr[6:2] ==? 5'b011x0 || 
+                       $instr[6:2] ==? 5'b01011 || 
+                       $instr[6:2] ==? 5'b10100 ; 
+         $is_s_instr = $instr[6:2] ==? 5'b0100x ;
+         $is_b_instr = $instr[6:2] ==? 5'b11000 ;
+         $is_j_instr = $instr[6:2] ==? 5'b11011 ;
+         $is_u_instr = $instr[6:2] ==? 5'b0x101 ;
+         
+           //Instruction immediate decode
+         $imm[31:0] = $is_i_instr ? {{21{$instr[31]}},$instr[30:20] }:
+                      $is_s_instr ? {{21{$instr[31]}},$instr[30:25],$instr[11:8],$instr[7]} :
+                      $is_b_instr ? {{20{$instr[31]}},$instr[7],$instr[30:25],$instr[11:8],1'b0} :
+                      $is_u_instr ? {$instr[31], $instr[30:20],$instr[19:12],12'b0 }:
+                      $is_j_instr ? {{12{$instr[31]}},$instr[19:12],$instr[20],$instr[30:21],1'b0} :
+                      32'b0 ;
+         $opcode[6:0] = $instr[6:0];
+
+           //b. func7 decode
+
+         $func7_valid = $is_r_instr ;
+         ?$func7_valid
+            $func7[6:0] = $instr[31:25];
+         //c. rs2 decode
+
+         $rs2_valid = $is_r_instr || $is_s_instr || $is_b_instr ;
+         ?$rs2_valid
+            $rs2[4:0] = $instr[24:20];
+
+          //d. rs1 valid
+
+         $rs1_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr ;
+         ?$rs1_valid
+            $rs1[4:0] = $instr[19:15] ;
+
+          //e. func3 valid
+
+         $func3_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr ;
+         ?$func3_valid
+            $func3[2:0] = $instr[14:12] ;
+
+         $rd_valid = $is_r_instr || $is_i_instr || $is_u_instr || $is_j_instr ;
+         ?$rd_valid
+            $rd[4:0] = $instr[11:7];     
+      
+         $dec_bits[10:0] = {$func7[5], $func3, $opcode} ;
+         $is_beq = $dec_bits ==? 11'bx_000_1100011 ;
+         $is_bne = $dec_bits ==? 11'bx_001_1100011 ;
+         $is_blt = $dec_bits ==? 11'bx_100_1100011 ;
+         $is_bge = $dec_bits ==? 11'bx_101_1100011 ;           
+         $is_bltu = $dec_bits ==? 11'bx_110_1100011 ;
+         $is_bgeu = $dec_bits ==? 11'bx_111_1100011 ;  
+         $is_addi = $dec_bits ==? 11'bx_000_0010011 ;
+         $is_add = $dec_bits ==? 11'b0_000_0110011 ;
+         
+         $is_load = $dec_bits ==? 11'bx_xxx_0000011;
+         
+         $is_sb = $dec_bits ==? 11'bx_000_0100011;
+         $is_sh = $dec_bits ==? 11'bx_001_0100011;
+         $is_sw = $dec_bits ==? 11'bx_010_0100011;
+         $is_slti = $dec_bits ==? 11'bx_010_0010011;
+         $is_sltiu = $dec_bits ==? 11'bx_011_0010011;
+         $is_xori = $dec_bits ==? 11'bx_100_0010011;
+         $is_ori = $dec_bits ==? 11'bx_110_0010011;
+         $is_andi = $dec_bits ==? 11'bx_111_0010011;
+         $is_slli = $dec_bits ==? 11'b0_001_0010011;
+         $is_srli = $dec_bits ==? 11'b0_101_0010011;
+         $is_srai = $dec_bits ==? 11'b1_101_0010011;
+         $is_sub = $dec_bits ==? 11'b1_000_0110011;
+         $is_sll = $dec_bits ==? 11'b0_001_0110011;
+         $is_slt = $dec_bits ==? 11'b0_010_0110011;
+         $is_sltu = $dec_bits ==? 11'b0_011_0110011;
+         $is_xor = $dec_bits ==? 11'b0_100_0110011;
+         $is_srl = $dec_bits ==? 11'b0_101_0110011;
+         $is_sra = $dec_bits ==? 11'b1_101_0110011;
+         $is_or = $dec_bits ==? 11'b0_110_0110011;
+         $is_and = $dec_bits ==? 11'b0_111_0110011;
+         $is_lui = $dec_bits ==? 11'bx_xxx_0110111;
+         $is_auipc = $dec_bits ==? 11'bx_xxx_0010111;
+         $is_jal = $dec_bits ==? 11'bx_xxx_1101111;
+         $is_jalr = $dec_bits ==? 11'bx_000_1100111;
+         $is_jump = $is_jal || $is_jalr ;
+         
+         `BOGUS_USE($is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add) 
+```
 
 
 
+### Lab to code complete ALU
+#### Task : write code for complete ALU
+
+<img width="556" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/2238e9f1-bfe2-40f5-9fba-a4cc77bf4257">
+
+These are the syntax for remaing opration that ALU will going to perform.
+
+TL verilog code for complete ALU is given below,
+```verilog
+@3
+     //Assigning aadi and add value to alu
+         $sltu_rslt[31:0] = $src1_value < $src2_value ;
+         $sltiu_rslt[31:0]  = $src1_value < $imm ;
+         
+         $result[31:0] =
+              $is_addi ? $src1_value + $imm :
+              $is_add ? $src1_value + $src2_value :
+              $is_andi ? $src1_value & $imm :
+              $is_ori  ? $src1_value | $imm :
+              $is_xori ? $src1_value ^ $imm :
+              $is_slli ? $src1_value << $imm[5:0] :
+              $is_srli ? $src1_value >> $imm[5:0] :
+              $is_and ? $src1_value & $src2_value :
+              $is_or ? $src1_value | $src2_value :
+              $is_xor ? $src1_value ^ $src2_value :
+              $is_sub ? $src1_value - $src2_value :
+              $is_sll ? $src1_value << $src2_value[4:0] :
+              $is_srl ? $src1_value >> $src2_value[4:0] :
+              $is_sltu ? $src1_value < $src2_value :
+              $is_sltiu ? $src1_value < $imm :
+              $is_lui ? {$imm[31:12], 12'b0} :
+              $is_auipc ? $pc + $imm : 
+              $is_jal ? $pc + 32'd4 :
+              $is_jalr ? $pc + 32'd4 :
+              $is_srai ? {{32{$src1_value[31]}}, $src1_value} >> $imm[4:0] :
+              $is_slt ? ($src1_value[31] == $src2_value[31]) ? $sltu_rslt : {31'b0, $src1_value[31]} :
+              $is_slti ? ($src1_value[31] == $imm[31]) ? $sltiu_rslt : {31'b0, $src1_value[31]} :
+              $is_sra ? {{32{$src1_value[31]}}, $src1_value} >> $src2_value[4:0] :
+              $is_load || $is_s_instr ? $src1_value + $imm :
+              32'bx ;
+        //Register file write
+         $rf_wr_en = $rd_valid && $rd != 5'b0 && $valid || >>2$valid_load ;
+         $rf_wr_index[4:0] = >>2$valid_load ? >>2$rd : $rd ;
+         $rf_wr_data[31:0] = >>2$valid_load ? >>2$ld_data : $result ;
+```
+
+## Load and Store Instructions and completing RISC-V CPU
+### Intriduction to load and store instruction and lab to Redirect loads
