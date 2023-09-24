@@ -97,7 +97,7 @@
     + [Solution to pipeline Hazards](#Solution-to-pipeline-Hazards)
       - [Lab for register file bypass to address Rd-After-Wr Hazard](#Lab-for-register-file-bypass-to-address-Rd-After-Wr-Hazard)
       - [Lab for branches to correct the branch target path](#Lab-for-branches-to-correct-the-branch-target-path)
-      - [Lab to complete instruction decode except Fence,Ecell,Ebreak](#Lab-to-complete-instruction-decode-except-Fence,Ecell,Ebreak)
+      - [Lab to complete instruction decode except Fence and Ecell and Ebreak](#Lab-to-complete-instruction-decode-except-Fence-and-Ecell-and-Ebreak)
       - [Lab to code complete ALU](#Lab-to-code-complete-ALU)
         
     + [Load/Store Instructions and completing RISC-V CPU](#Load/Store-Instructions-and-completing-RISC-V-CPU)
@@ -2440,7 +2440,7 @@ To implement it we have to do some modification like this given below instructio
 
 
 
-### Lab to complete instruction decode except Fence,Ecell,Ebreak
+### Lab to complete instruction decode except Fence and Ecell and Ebreak
 
 
 
