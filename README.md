@@ -2680,13 +2680,19 @@ TL Verilog code for FINAL 4 STAGE RISC-V ARCHITECTURE is given below,
 In this workshop, i got knowlage about RISC-V CPU, it's architecture and it's digital level design. Also learn how to use tool like mackerchip and the TL verilog (transational level verilog).
 
 # References
-"https://github.com/RISCV-MYTH-WORKSHOP/RISC-V-CPU-Core-using-TL-Verilog"
-"https://github.com/stevehoover/RISC-V_MYTH_Workshop"
-"https://drive.google.com/file/d/1ZcjLzg-53It4CO3jDLofiUPZJ485JZ_g/view"
-"https://drive.google.com/file/d/1tqvXmFru31-tezDX30jTNJoLcQk308UM/view"
-"https://github.com/shivanishah269/risc-v-core"
-"https://myth.makerchip.com/sandbox?code_url=https:%2F%2Fraw.githubusercontent.com%2Fstevehoover%2FRISC-V_MYTH_Workshop%2Fmaster%2Freference_solutions.tlv#"
-"https://github.com/TL-X-org/TL-V_Projects"
+https://github.com/RISCV-MYTH-WORKSHOP/RISC-V-CPU-Core-using-TL-Verilog
+
+https://github.com/stevehoover/RISC-V_MYTH_Workshop
+
+https://drive.google.com/file/d/1ZcjLzg-53It4CO3jDLofiUPZJ485JZ_g/view
+
+https://drive.google.com/file/d/1tqvXmFru31-tezDX30jTNJoLcQk308UM/view
+
+https://github.com/shivanishah269/risc-v-core
+
+https://myth.makerchip.com/sandbox?code_url=https:%2F%2Fraw.githubusercontent.com%2Fstevehoover%2FRISC-V_MYTH_Workshop%2Fmaster%2Freference_solutions.tlv#
+
+https://github.com/TL-X-org/TL-V_Projects"
 
 # Acknowledgement
 I would like to express my special thanks of gratitude to `[Mr. kunal ghosh](https://github.com/kunalg123)` (co.-founder of VLSIsystem design (VSD) corp.pvt.ltd.) and `[Mr. Steve Hoover](https://github.com/stevehoover)`  (Founder, Redwood EDA) for their guidence and temendous presenting this workshop on RISC-V based MYTH. The Workshop was excellent and well designed. This workshop taught me a lot of new things about the RISC-V architecture and its digital level disign, TL verilog, Mackerchip platform and many more.
