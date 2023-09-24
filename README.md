@@ -2170,3 +2170,92 @@ Finally, here we are getting 45 as a result.
 
 <img width="960" alt="Screenshot 2023-09-24 025859" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/0d3f7bb6-8016-4112-bd88-dad3706626d7">
 
+
+
+
+# Day 5 -Complete pipelined RISC-V CPU micro-architecture
+## Pipelining the CPU
+### Introduction to Control flow Hazard and Read after write Hazard
+We can understand the pipelining by waterfall logic diagram.
+
+<img width="569" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ebcf8be3-5937-4c67-a55d-e34194fe4fd8">
+
+#### Pipelining in RISC-V
+Till now our RISC-V architecture is working currectly but it is running at low frequenccy because of single stage. Let's convert our RISC-V architecture into 5 stages, so that we can use it at high frequency. So at the end, clock speed will increase and overall performance will increase.
+
+<img width="459" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/8a0e45a8-0c2c-4196-a6d7-5606bcea67ab">
+
+But when we are going to connect it in 5 stages like this,
+
+<img width="446" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/d20998cd-048e-4daa-a8cc-a536f2d359e5">
+
+#### Control flow hazard
+Some problems occurse. for example, if branch instruction came at stage 1, then in next stage we need target address immidiatly. but in as we can see in pipelined stages, the target address is calculated in registers and it will come out at stage 4. so it will crreate control flow hazard.
+
+#### Read after write hazard
+Similarly other example, if we want to write the result in register bank then second writing stage should be after first calculation stage. so here read after write hazard created.
+
+#### Branch instruction hazard
+One of the most significant hazards is the "branch instruction hazard," also known as the "branch penalty."
+
+Branch instructions are used to alter the sequence of instructions being executed by the processor. They allow the program to make decisions, such as jumping to a different section of code depending on a certain condition. Branch instructions introduce hazards in pipelining due to the fact that the outcome of the branch (taken or not taken) is often determined later in the pipeline than the fetch and decode stages.
+
+
+### Lab to create 3-Cycle valid signal
+Link for valid 3-cycle signal is : ```https://myth.makerchip.com/sandbox/0rkfAhzM5/0vgh64#```
+
+If we look at diagram in another way instrad of waterfall logic then the hazards are looks like this,
+
+<img width="452" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/2997a659-d845-4b71-bede-3cba0cc03dce">
+
+Suppose our pipeline have a 5 stages like this,
+
+<img width="227" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/198f7e20-832c-49f1-92c8-14effafbd389">
+
+Let's understand it by some specific instructions like given below.
+
+<img width="559" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/ef8c868d-f2f6-4fdd-bb08-d6cc66ac7b85">
+
+Let's solve this problem by two ways.
+
+#### first solution: 
+We operate out pipeline at every third cycle. then instructions are look like this in waterflow diagram,
+
+<img width="569" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/1c9700ea-003e-4303-bdc6-ce76eca27573">
+
+So, in this types of solution, pipeline latency between signals looks like this,
+
+<img width="579" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/4cc8afa3-3854-474e-94f0-fe0d9d36a93c">
+
+To implement this, we have to create valid signal to understand which clock cycle is valid or not.
+
+<img width="458" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/d66d0fdc-d6e4-4f66-9931-89be7d70b701">
+
+We have to create $valid cycle pulse loop after every 3 cycles. we have to create $valid= 0 when $reset=1,$valid=1 when $start=1 and >>3$valid(means after every third cycle $valid=1 or in other word, $valid= value that was 3 cycle before).
+
+<img width="527" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/792223c3-87d9-4776-a6ff-d5fe474dd49d">
+
+TL verilog code for 3-cycle valid signal is given below,
+```verilog
+   |cpu
+      @0
+         $reset = *reset;
+         $start = (>>1$reset && !$reset) ;
+         $valid = $reset ?  1'b0 : ($start || >>3$valid ); 
+
+```
+
+Code and waveform from mackerchip,
+
+<img width="959" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/0a4dbc97-6071-4d87-9573-af13a28d7cbb">
+
+Here we can see the same output signal as we saw upper.
+
+
+
+### Lab to code 3-Cycle RISC-V to take care of invalid Cycles
+
+
+
+
+
