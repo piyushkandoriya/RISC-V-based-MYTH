@@ -104,13 +104,16 @@
       - [Intriduction to load and store instruction and lab to Redirect loads](#Intriduction-to-load-and-store-instruction-and-lab-to-Redirect-loads)
       - [Lab to load data from memory to register file](#Lab-to-load-data-from-memory-to-register-file)
       - [Lab to instantiate data memory to register file](#Lab-to-instantiate-data-memory-to-register-file)
-      - [Lab for add, stores and load to the test program](#Lab-for-add,-stores-and-load-to-the-test-program)
+      - [Lab for add and stores and load to the test program](#Lab-for-add-and-stores-and-load-to-the-test-program)
       - [Lab to add control logic for jump instruction](#Lab-to-add-control-logic-for-jump-instruction)
+      - [Final 4 stage RISC-V pipelined architecture](#Final-4-stage-RISC-V-pipelined-architecture)
       - [Wrap up](#Wrap-up)
     
  * [References](#References)
    
  * [Acknowledgement](#Acknowledgement)
+
+ * [Inquiries](#Inquiries)
     
 
 # Day 1 -Introduction to RISC_V ISA and GNU compiler toolchain	 
@@ -2566,24 +2569,24 @@ TL verilog code for complete ALU is given below,
               $is_andi ? $src1_value & $imm :
               $is_ori  ? $src1_value | $imm :
               $is_xori ? $src1_value ^ $imm :
-              $is_slli ? $src1_value << $imm[5:0] :
-              $is_srli ? $src1_value >> $imm[5:0] :
-              $is_and ? $src1_value & $src2_value :
+              $is_slli ? $src1_value << $imm[5:0] :  // shift left logic immediate
+              $is_srli ? $src1_value >> $imm[5:0] : // shift right logic immediate
+              $is_and ? $src1_value & $src2_value : 
               $is_or ? $src1_value | $src2_value :
               $is_xor ? $src1_value ^ $src2_value :
               $is_sub ? $src1_value - $src2_value :
-              $is_sll ? $src1_value << $src2_value[4:0] :
-              $is_srl ? $src1_value >> $src2_value[4:0] :
-              $is_sltu ? $src1_value < $src2_value :
-              $is_sltiu ? $src1_value < $imm :
-              $is_lui ? {$imm[31:12], 12'b0} :
-              $is_auipc ? $pc + $imm : 
-              $is_jal ? $pc + 32'd4 :
-              $is_jalr ? $pc + 32'd4 :
-              $is_srai ? {{32{$src1_value[31]}}, $src1_value} >> $imm[4:0] :
-              $is_slt ? ($src1_value[31] == $src2_value[31]) ? $sltu_rslt : {31'b0, $src1_value[31]} :
-              $is_slti ? ($src1_value[31] == $imm[31]) ? $sltiu_rslt : {31'b0, $src1_value[31]} :
-              $is_sra ? {{32{$src1_value[31]}}, $src1_value} >> $src2_value[4:0] :
+              $is_sll ? $src1_value << $src2_value[4:0] :  // shift left logic
+              $is_srl ? $src1_value >> $src2_value[4:0] :    // shift righ logic
+              $is_sltu ? $src1_value < $src2_value :   //set less than unsigned
+              $is_sltiu ? $src1_value < $imm :   //set less than unsigned immediate
+              $is_lui ? {$imm[31:12], 12'b0} :  //load upper immediate
+              $is_auipc ? $pc + $imm :    //add upper immediate at PC
+              $is_jal ? $pc + 32'd4 :    //jump and link
+              $is_jalr ? $pc + 32'd4 :  //jump and link register
+              $is_srai ? {{32{$src1_value[31]}}, $src1_value} >> $imm[4:0] :  //shift right arithmatic immediate
+              $is_slt ? ($src1_value[31] == $src2_value[31]) ? $sltu_rslt : {31'b0, $src1_value[31]} :  //set less than
+              $is_slti ? ($src1_value[31] == $imm[31]) ? $sltiu_rslt : {31'b0, $src1_value[31]} :    //set less than immediate
+              $is_sra ? {{32{$src1_value[31]}}, $src1_value} >> $src2_value[4:0] :  //shift right arithmatic
               $is_load || $is_s_instr ? $src1_value + $imm :
               32'bx ;
         //Register file write
@@ -2594,3 +2597,99 @@ TL verilog code for complete ALU is given below,
 
 ## Load and Store Instructions and completing RISC-V CPU
 ### Intriduction to load and store instruction and lab to Redirect loads
+Let's implement the load and store instruction. For that we need Data memory. In RISC_V, There are five diffrent types of LOAD instruction (LW,LH,LB,LHU,LBU). These instructions support both signed and unsigned loads of different width of data. (Because of signed and unsigned, extension of upper bit gets affected). similar for store(Sw,SH,SB).
+
+<img width="560" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/c850f8a4-2a96-4855-a39a-aa562791a147">
+
+Here in rd, value stored in takem from data memory and address of that memory is calculated from (imm and rs1).
+
+In the diagram, we can see that after data memory we can take the load and store data. but again we can load and store the data after two cycle from when we calculate the load and store address. So, we can't write the register file with load data. So, we have an another hazard here and we have to solve this hazard.
+
+Let's look at waterfall diagram here,
+
+<img width="551" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b327ad68-4d1f-4930-9c6c-0ff16cb7bc94">
+
+Here what happed is, in 3rd cycle, at execution time, load address is generated and after 2 cycle it will be written in data memory to RF. so if "rt" instruction is running in 5th cycle then we can not write two data at a same time in RF. so we have to pass this 4th and 5th instruction after the data is loaded in Data memory. for that we have to do the same thing what we have done in branch instruction. we will unvalid these 4th and 5th cycle at that time and again we will perform the 4th and 5th instruction at 6th and 7th cycle. basically at 4th cycle we will get the addess of data memory and data, and at 5th cycle we will load this data in to data memory  and at 6th cycle we will write these data into RF. if we don't unvalid 4th and 5th operation then at 7th cycle writing operation of 5th instruction will collaps with writing opration of load data.
+
+it's looks like this in water fall diagram.
+
+<img width="497" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/226bf97e-a597-4508-8652-6d635ccddd16">
+
+For that we have to clear $valid signal in the shadow of the load like branch. and we have to select PC from 3 cycle ago to reperform this unvalid cycle's instructions.
+
+<img width="520" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/fd437466-d793-4407-873d-5c54f8c128d2">
+
+
+
+### Lab to load data from memory to register file
+Till now we unvalid the two operations after the load operation. now we have to load the data to data memory and then we have to write the data into RF file. for that First we have to calculate the data memory address (and data if we are performing store operation) and then we will store or load data from data memory and then we will write it back into RF.
+
+<img width="521" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/0d5c43c3-85df-42bd-8255-8c5ad2953bfd">
+
+For that we have to follow the step given below,
+
+<img width="506" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/8bcf11e9-4d45-4c43-bac7-9316f0f1cd02">
+
+In first step, $is_load and $is_s_instr are the instruction where we have to calculate the address. In second step we have to add one RF_Wr mux to select the $ld_data when !$valid is available. (means during unvalid cycles). In third step we have to enable the RF_Wr for $ld_data after 2 cycles from $load came.
+
+
+### Lab to instantiate data memory to register file
+Now it's time to instantiate the data memory by uncommenting [m4+dmem (@4)].
+
+And next task is to connect all signals that data memory required like $reset,$dmem_wr_en,$dmem_rd_en,$dmem_wr_add,$dmem_wr_data,$dmem_rd_index[5:0] and $dmem_rd_data.
+
+<img width="263" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/1cd8b016-4106-4051-99fc-d006bd9ffb1c">
+
+We can connect the interface signals using address bits[5:2] (because only 16 entries are possible)to perform load and store when $valid is available.
+
+
+### Lab for add and stores and load to the test program
+To test the program, we have to add two instructions at the end of Assebly language program.
+
+<img width="171" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/0ddb96b6-483d-48e9-a9be-5d678ccc0ee8">
+
+Here 100 is binary number. because of "sw , r0, r10, 100" we are going to store the value of R0 into value of [deta memory addree= value of R10+4]. and the same value it will take from memory and load into the register R15. so it is used as a test bench of our code. As we use passing condition where we use xreg[10], now we have to update it as xreg[15]. 
+
+So passing condition is like ```*passed = |cpu/xreg[15]>>5$value == (1+2+3+4+5+6+7+8+9);
+                                *failed = 1'b0;
+                             ```
+
+### Lab to add control logic for jump instruction
+Now only one instruction remaining to add into RISC_V CPU core and this instruction is JUMP. basically jumps are unconditional branches.
+
+There are two types of jump instruction. (1)JAL(jump and link) : jump to an address=(PC+imm)  and (2)JALR(jump and link to register): jump to address=src1+imm.
+
+To implement it we have to follow these steps given below,
+
+<img width="545" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/79888d97-4ab1-4806-9caa-ab519fb49173">
+
+So In architecture block jump is shown by red line,
+
+<img width="517" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/a1c21b59-f9a1-473c-9b5d-cd2d6d613977">
+
+### Final 4 stage RISC-V pipelined architecture
+
+TL Verilog code for FINAL 4 STAGE RISC-V ARCHITECTURE is given below,
+
+
+```verilog
+
+```
+
+###  Wrap up
+In this workshop, i got knowlage about RISC-V CPU, it's architecture and it's digital level design. Also learn how to use tool like mackerchip and the TL verilog (transational level verilog).
+
+# References
+"https://github.com/RISCV-MYTH-WORKSHOP/RISC-V-CPU-Core-using-TL-Verilog"
+"https://github.com/stevehoover/RISC-V_MYTH_Workshop"
+"https://drive.google.com/file/d/1ZcjLzg-53It4CO3jDLofiUPZJ485JZ_g/view"
+"https://drive.google.com/file/d/1tqvXmFru31-tezDX30jTNJoLcQk308UM/view"
+"https://github.com/shivanishah269/risc-v-core"
+"https://myth.makerchip.com/sandbox?code_url=https:%2F%2Fraw.githubusercontent.com%2Fstevehoover%2FRISC-V_MYTH_Workshop%2Fmaster%2Freference_solutions.tlv#"
+"https://github.com/TL-X-org/TL-V_Projects"
+
+# Acknowledgement
+I would like to express my special thanks of gratitude to `[Mr. kunal ghosh](https://github.com/kunalg123)` (co.-founder of VLSIsystem design (VSD) corp.pvt.ltd.) and `[Mr. Steve Hoover](https://github.com/stevehoover)`  (Founder, Redwood EDA) for their guidence and temendous presenting this workshop on RISC-V based MYTH. The Workshop was excellent and well designed. This workshop taught me a lot of new things about the RISC-V architecture and its digital level disign, TL verilog, Mackerchip platform and many more.
+
+# Inquiries
+Contect me on a `[linkedin](https://www.linkedin.com/in/piyush-kandoriya-b96675248)https://www.linkedin.com/in/piyush-kandoriya-b96675248`
