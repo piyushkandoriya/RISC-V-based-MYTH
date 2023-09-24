@@ -2695,7 +2695,7 @@ https://myth.makerchip.com/sandbox?code_url=https:%2F%2Fraw.githubusercontent.co
 https://github.com/TL-X-org/TL-V_Projects"
 
 # Acknowledgement
-I would like to express my special thanks of gratitude to `[Mr. kunal ghosh](https://github.com/kunalg123)` (co.-founder of VLSIsystem design (VSD) corp.pvt.ltd.) and `[Mr. Steve Hoover](https://github.com/stevehoover)`  (Founder, Redwood EDA) for their guidence and temendous presenting this workshop on RISC-V based MYTH. The Workshop was excellent and well designed. This workshop taught me a lot of new things about the RISC-V architecture and its digital level disign, TL verilog, Mackerchip platform and many more.
+I would like to express my special thanks of gratitude to [Mr. kunal ghosh](https://github.com/kunalg123) (co.-founder of VLSIsystem design (VSD) corp.pvt.ltd.) and [Mr. Steve Hoover](https://github.com/stevehoover)  (Founder, Redwood EDA) for their guidence and temendous presenting this workshop on RISC-V based MYTH. The Workshop was excellent and well designed. This workshop taught me a lot of new things about the RISC-V architecture and its digital level disign, TL verilog, Mackerchip platform and many more.
 
 # Inquiries
-Contect me on a `[linkedin](https://www.linkedin.com/in/piyush-kandoriya-b96675248)https://www.linkedin.com/in/piyush-kandoriya-b96675248`
+Contact me on a [linkedin](https://www.linkedin.com/in/piyush-kandoriya-b96675248)
