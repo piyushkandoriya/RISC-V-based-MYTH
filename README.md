@@ -98,7 +98,7 @@
       - [Lab for register file bypass to address Rd-After-Wr Hazard](#Lab-for-register-file-bypass-to-address-Rd-After-Wr-Hazard)
       - [Lab for branches to correct the branch target path](#Lab-for-branches-to-correct-the-branch-target-path)
       - [Lab to complete instruction decode except Fence,Ecell,Ebreak](#Lab-to-complete-instruction-decode-except-Fence,Ecell,Ebreak)
-      - [Lab to code complete ALU](#La-to-code-complete-ALU)
+      - [Lab to code complete ALU](#Lab-to-code-complete-ALU)
         
     + [Load/Store Instructions and completing RISC-V CPU](#Load/Store-Instructions-and-completing-RISC-V-CPU)
       - [Intriduction to load/store instruction and lab to Redirect loads](#Intriduction-to-load/store-instruction-and-lab-to-Redirect-loads)
@@ -2218,7 +2218,7 @@ Let's understand it by some specific instructions like given below.
 
 Let's solve this problem by two ways.
 
-#### first solution: 
+#### first solution of hazard: 3-cycle valid signal 
 We operate out pipeline at every third cycle. then instructions are look like this in waterflow diagram,
 
 <img width="569" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/1c9700ea-003e-4303-bdc6-ce76eca27573">
@@ -2254,7 +2254,7 @@ Here we can see the same output signal as we saw upper.
 
 
 ### Lab to code 3-Cycle RISC-V to take care of invalid Cycles
-Link for 3-cycle RISC-V is : ```https://myth.makerchip.com/sandbox/0rkfAhzM5/0nZh0l#```
+Link for 3-cycle RISC-V is : ```https://myth.makerchip.com/sandbox/0rkfAhzM5/0pghrA```
 
 <img width="523" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/a4e280fe-7215-45fa-bf94-e74193322741">
 
@@ -2393,5 +2393,54 @@ TL verilog code for 3-cycle RISC-V is given below,
 Next step here is to distribute the stages as we want in the pipeline.
 
 For that we have to modify the RF like "m4+rf (@2,@3)" means register will read after @2 clock and write back after @3 clock. we have to set write back by >>2 because 1 stage is between both now.
+
+
+
+
+## Solution to pipeline Hazards
+### Lab for register file bypass to address Rd-After-Wr Hazard
+#### Second solution of hazard: register file bypass
+Assuming we have back to back instructions.
+
+<img width="449" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b2ffc727-da43-4755-b929-88db4b5ba6c3">
+
+Here red dotted line indicating the issue we currently have regardin register file writing that we don't have a time to write register file in previous instruction and read it in this instruction(read after write hazard). So we are going to remove that path and introduce a better solution. The problem we are facing when some instruction came and that want value of previous instruction which we are not able to write in RF due to next instruction strat perfoming. The solution is we will bypass the value (ALU output of previous instructio, that we want in next instruction)what we want to write in the register. we direct use previous value in the next input of ALU by bypassing from previous instruction. This is called register bypass.
+
+For that we are adding this muxes and correcting this register file.
+
+<img width="450" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/40a40d53-a65d-408f-a365-866281cb3dab">
+
+To implemet it we have do this modification in code,
+
+<img width="560" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/af7a682e-cd95-49e5-acd7-27a5956ddd75">
+
+
+
+### Lab for branches to correct the branch target path
+#### Task: Correct the branch traget path in branch type instruction
+Our CPU is constantly updating the PC by one increment. and it will use this incremented PC value in the next instruction. If we find that we are taken the branch instruction then we have to correct the situation.
+
+When we taken the branch instruction, we have to decode the instruction and then after calculation in register file we can get that branch istruction will be taken or not and after ALU, we can find the branch address and immediate value. so we can't avoid this 3 stages of cycle or we can't avoide this previous two dead instruction cycle here.
+
+<img width="502" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/30447562-04ea-4838-8f03-bb735cdfe2ea">
+
+One of the solution is branch prediction but we are not going to do it. we will suffer it by panelty of 2 dead cycles.
+
+<img width="548" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/8bf3a9da-dbed-4789-92a7-4918f44baea0">
+
+Here we can see these two dead cycles in waterfall diagram.
+
+We have to implement branch logic like this,
+
+<img width="527" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/72b3008e-c2ab-4be0-bfdf-9e5212dcc9ee">
+
+To implement it we have to do some modification like this given below instructions.
+
+<img width="505" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/6f57795e-d388-4edb-95ee-22d605156a44">
+
+
+
+### Lab to complete instruction decode except Fence,Ecell,Ebreak
+
 
 
