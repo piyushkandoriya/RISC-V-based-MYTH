@@ -2967,6 +2967,8 @@ TL verilog syntax which we have to add and change in previous code is given,
 @3
          $valid = !(>>1$valid_taken_branch || >>2$valid_taken_branch || >>1$valid_load || >>2$valid_load 
                     || >>1$valid_jump || >>2$valid_jump) ; // similar like above we have to modify the to generate valid jump
+         $valid_load = $valid && $is_load ; //$is_load is load operation decoded bits from indtruction decode
+         $valid_jump = $valid && $is_jump;  //$is_jump = ($is_jal || $is_jalr);
 @1
          $is_jal = $dec_bits ==? 11'bx_xxx_1101111;  //we have to this syntax in decode instruction with other
          $is_jalr = $dec_bits ==? 11'bx_000_1100111; //we have to this syntax in decode instruction with other
@@ -2977,7 +2979,7 @@ TL verilog syntax which we have to add and change in previous code is given,
 
 
 ### Final 4 stage RISC-V pipelined architecture
-#### Link for Final 4 stage RISC-V pipelined architecture is: ```https://myth.makerchip.com/sandbox/0rkfAhzM5/048hNV#```
+#### Link for Final 4 stage RISC-V pipelined architecture is: ```https://myth.makerchip.com/sandbox/0Z6fMhjLJ/0j2hWM```
 
 
 #### TL Verilog code for FINAL 4 STAGE RISC-V ARCHITECTURE is given below,
@@ -3032,7 +3034,7 @@ TL verilog syntax which we have to add and change in previous code is given,
       @3
          $valid = !(>>1$valid_taken_branch || >>2$valid_taken_branch || >>1$valid_load || >>2$valid_load || >>1$valid_jump || >>2$valid_jump);  // means valid signal give output only when in previous two stage there is no branch taken. and then pipeline work as usual 
          $valid_load = $valid && $is_load ; //$is_load is load operation decoded bits from indtruction decode
-         $valid_jump = $valid && $is_load;  
+         $valid_jump = $valid && $is_jump;   //$is_jump = ($is_jal || $is_jalr);
       @1
          // Instruction Fetch
          $imem_rd_en = !>>1$reset;
