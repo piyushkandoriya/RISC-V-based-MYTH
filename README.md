@@ -2267,7 +2267,7 @@ Here we have to take care of things like,
 
 Here we have to avoid Writing in RF during invalid clock. for that we have to introduce $rf_wr_en = $valid && $rf_wr_en1; where $rf_wr_en1 =$rd_valid && $rd != 5'b0; (if $rd_valid =0 or $rd =0 then then $rf_wr_en1 is 0). Here we are changing $rf_wr_en to $rf_wr_en1 because bydefault $rf_wr_en is given to RF. so we have to take other variable.
 
-Next step is to avoid PC to redirecting during invalid instruction(Invalid instruction=instruction at invalid signal). to to that we have to create signal called $valid_taken_br = $valid && $taken_br . means when valid signal will come at that time only branch insruction will perform and update the PC with calculated traget address. For this signal we give to PC mux to control the  PC mux.
+Next step is to avoid PC to redirecting during invalid instruction(Invalid instruction=instruction at invalid signal). to to that we have to create signal called $valid_taken_branch = $valid && $taken_branch . means when valid signal will come at that time only branch insruction will perform and update the PC with calculated traget address. For this signal we give to PC mux to control the  PC mux.
 
 In last step we have to update PC instruction by >>3.
 
@@ -2685,8 +2685,8 @@ But now we move valid signal to @3 stage then PC will increment after every cycl
 TL verilog changes is  given by,
 ```verilog
    $pc[31:0] = >>1$reset ? 32'd0 : (>>3$valid_taken_branch ? >>3$br_tgt_pc :  (>>1$pc+32'd4)); // >>1$pc+32'd4 from >>3$pc+32'd4  to increment PC after every clock cycle
-      @3
-         $valid = !(>>1$valid_taken_br || >>2$valid_taken_br);  // means valid signal give output only when in previous two stage there is no branch taken. and then pipeline work as usual 
+@3
+   $valid = !(>>1$valid_taken_branch || >>2$valid_taken_branch);  // means valid signal give output only when in previous two stage there is no branch taken. and then pipeline work as usual 
 ```
 
 ### Lab to complete instruction decode except Fence and Ecell and Ebreak
@@ -2761,8 +2761,6 @@ TL verilog code for other instruction is given below,
          $is_bgeu = $dec_bits ==? 11'bx_111_1100011 ;  
          $is_addi = $dec_bits ==? 11'bx_000_0010011 ;
          $is_add = $dec_bits ==? 11'b0_000_0110011 ;
-         
-         $is_load = $dec_bits ==? 11'bx_xxx_0000011;
          
          $is_sb = $dec_bits ==? 11'bx_000_0100011;
          $is_sh = $dec_bits ==? 11'bx_001_0100011;
@@ -2865,6 +2863,18 @@ For that we have to clear $valid signal in the shadow of the load like branch. a
 
 <img width="520" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/fd437466-d793-4407-873d-5c54f8c128d2">
 
+For that we have to modify the $valid signal and $pC signal like given below,
+```verilog
+@0
+         $reset = *reset;
+                  
+         $pc[31:0] = >>1$reset ? 32'd0 : (>>3$valid_taken_branch ? >>3$br_tgt_pc : (>>3$valid_load ? >>3$pc+32'd4 : (>>1$pc+32'd4))); // >>1$pc+32'd4 from >>3$pc+32'd4  to increment PC after every clock cycle and >>3$valid_load because if load intruction was there before 3 cycle back then next two instruction become invalid and we have to perform it once again
+ @3
+         $valid = !(>>1$valid_taken_branch || >>2$valid_taken_branch || >>1$valid_load || >>2$valid_load );  // means valid signal give output only when in previous two stage there is no branch taken. and then pipeline work as usual
+         $valid_load = $valid && $is_load ; ////$is_load is load operation decoded bits from indtruction decode(we will add this instruction in next lab)
+      
+```
+
 
 
 ### Lab to load data from memory to register file
@@ -2878,6 +2888,18 @@ For that we have to follow the step given below,
 
 In first step, $is_load and $is_s_instr are the instruction where we have to calculate the address. In second step we have to add one RF_Wr mux to select the $ld_data when !$valid is available. (means during unvalid cycles). In third step we have to enable the RF_Wr for $ld_data after 2 cycles from $load came.
 
+above TL verilog syntaxes are given below,
+```verilog
+@1
+         $is_load = $dec_bits ==? 11'bx_xxx_0000011; // we hvae to add this syntax with all instruction in instruction decode section
+@3
+         //Register file write
+         $rf_wr_en = $rd_valid && $rd != 5'b0 && ($valid || >>2$valid_load) ;  //to enable write when load instruction was there before 2 cycle
+         $rf_wr_index[4:0] = >>2$valid_load ? >>2$rd : $rd ; //to enable write the value in RF when load instruction was there before 2 cycle otherwise it will write the value from rd register only
+         $rf_wr_data[31:0] = >>2$valid_load ? >>2$ld_data : $result ;      // $result is coming from ALU and getting stored in $rf_wr_index[4:0] address of RISC-V register         
+                                            // having value $rf_wr_data   
+      
+```
 
 ### Lab to instantiate data memory to register file
 Now it's time to instantiate the data memory by uncommenting [m4+dmem (@4)].
@@ -2888,8 +2910,24 @@ And next task is to connect all signals that data memory required like $reset,$d
 
 We can connect the interface signals using address bits[5:2] (because only 16 entries are possible)to perform load and store when $valid is available.
 
+TL verilog syntax for above connection of interface is given below,
+```verilog
+ @4
+         $dmem_wr_en = $is_s_instr && $valid ; //connecting the interface of data memory
+         $dmem_addr[3:0] = $result[5:2] ;
+         $dmem_wr_data[31:0] = $src2_value ;
+         $dmem_rd_en = $is_load ;
+        
+ @4
+         //LOAD DATA
+         $ld_data[31:0] = $dmem_rd_data ;
+```
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/dc270ed3-9f7e-40ab-948f-4bc5c815d106">
+
 
 ### Lab for add and stores and load to the test program
+Link with a testbench is : "https://myth.makerchip.com/sandbox/0rkfAhzM5/02Rhq4#"
 To test the program, we have to add two instructions at the end of Assebly language program.
 
 <img width="171" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/0ddb96b6-483d-48e9-a9be-5d678ccc0ee8">
@@ -2899,6 +2937,12 @@ Here 100 is binary number. because of "sw , r0, r10, 100" we are going to store 
 So passing condition is like ```*passed = |cpu/xreg[15]>>5$value == (1+2+3+4+5+6+7+8+9);
                                 *failed = 1'b0;
                              ```
+code and log file from the mackerchip is given below,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/40dbd76c-0548-4d62-b08a-36b68ad0f72c">
+
+Here we are getting "PASSED" signal which we can see in above image. 
+
 
 ### Lab to add control logic for jump instruction
 Now only one instruction remaining to add into RISC_V CPU core and this instruction is JUMP. basically jumps are unconditional branches.
@@ -2913,14 +2957,286 @@ So In architecture block jump is shown by red line,
 
 <img width="517" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/a1c21b59-f9a1-473c-9b5d-cd2d6d613977">
 
-### Final 4 stage RISC-V pipelined architecture
-
-TL Verilog code for FINAL 4 STAGE RISC-V ARCHITECTURE is given below,
-
-
+TL verilog syntax which we have to add and change in previous code is given,
 ```verilog
+@0
+         $pc[31:0] = >>1$reset ? 32'd0 : (>>3$valid_taken_branch ? >>3$br_tgt_pc : (>>3$valid_load ? >>3$pc+32'd4 : ((>>3$valid_jump && >>3$is_jal) ? >>3$br_tgt_pc : (>>3$valid_jump && >>3$is_jalr) ? >>3$jalr_tgt_pc : (>>1$pc+32'd4))))); // here we added jump conditions to take PC at the target address
 
+@3
+         $valid = !(>>1$valid_taken_branch || >>2$valid_taken_branch || >>1$valid_load || >>2$valid_load 
+                    || >>1$valid_jump || >>2$valid_jump) ; // similar like above we have to modify the to generate valid jump
+@1
+         $is_jal = $dec_bits ==? 11'bx_xxx_1101111;  //we have to this syntax in decode instruction with other
+         $is_jalr = $dec_bits ==? 11'bx_000_1100111; //we have to this syntax in decode instruction with other
+@3
+         $jalr_tgt_pc[31:0] = $src1_value + $imm ; //here we are calculating the target address and this address we will give to PC is $valid_jump condition will satisfy
 ```
+
+
+
+### Final 4 stage RISC-V pipelined architecture
+#### Link for Final 4 stage RISC-V pipelined architecture is: ```https://myth.makerchip.com/sandbox/0rkfAhzM5/048hNV```
+
+
+#### TL Verilog code for FINAL 4 STAGE RISC-V ARCHITECTURE is given below,
+```verilog
+\m4_TLV_version 1d: tl-x.org
+\SV
+   // This code can be found in: https://github.com/stevehoover/RISC-V_MYTH_Workshop
+   
+   m4_include_lib(['https://raw.githubusercontent.com/BalaDhinesh/RISC-V_MYTH_Workshop/master/tlv_lib/risc-v_shell_lib.tlv'])
+
+\SV
+   m4_makerchip_module   // (Expanded in Nav-TLV pane.)
+\TLV
+
+   // /====================\
+   // | Sum 1 to 9 Program |
+   // \====================/
+   //
+   // Program for MYTH Workshop to test RV32I
+   // Add 1,2,3,...,9 (in that order).
+   //
+   // Regs:
+   //  r10 (a0): In: 0, Out: final sum
+   //  r12 (a2): 10
+   //  r13 (a3): 1..10
+   //  r14 (a4): Sum
+   // 
+   // External to function:
+   m4_asm(ADD, r10, r0, r0)             // Initialize r10 (a0) to 0.
+   // Function:
+   m4_asm(ADD, r14, r10, r0)            // Initialize sum register a4 with 0x0
+   m4_asm(ADDI, r12, r10, 1010)         // Store count of 10 in register a2.
+   m4_asm(ADD, r13, r10, r0)            // Initialize intermediate sum register a3 with 0
+   // Loop:
+   m4_asm(ADD, r14, r13, r14)           // Incremental addition
+   m4_asm(ADDI, r13, r13, 1)            // Increment intermediate register by 1
+   m4_asm(BLT, r13, r12, 1111111111000) // If a3 is less than a2, branch to label named <loop>
+   m4_asm(ADD, r10, r14, r0)            // Store final result to register a0 so that it can be read by main program
+   m4_asm(SW, r0, r10, 100)
+   m4_asm(LW, r15, r0, 100)
+   
+   // Optional:
+   // m4_asm(JAL, r7, 00000000000000000000) // Done. Jump to itself (infinite loop). (Up to 20-bit signed immediate plus implicit 0 bit (unlike JALR) provides byte address; last immediate bit should also be 0)
+   m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
+
+   |cpu
+      @0
+         $reset = *reset;
+         
+         
+         $pc[31:0] = >>1$reset ? 32'd0 : (>>3$valid_taken_branch ? >>3$br_tgt_pc : (>>3$valid_load ? >>3$pc+32'd4 : (>>3$valid_jump && >>3$is_jal ? >>3$br_tgt_pc : (>>3$valid_jump && >>3$is_jalr ? >>3$jalr_tgt_pc : (>>1$pc+32'd4))))); // >>1$pc+32'd4 from >>3$pc+32'd4  to increment PC after every clock cycle and >>3$valid_load because if load intruction was there before 3 cycle back then next two instruction become invalid and we have to perform it once again
+      @3
+         $valid = !(>>1$valid_taken_branch || >>2$valid_taken_branch || >>1$valid_load || >>2$valid_load || >>1$valid_jump || >>2$valid_jump);  // means valid signal give output only when in previous two stage there is no branch taken. and then pipeline work as usual 
+         $valid_load = $valid && $is_load ; //$is_load is load operation decoded bits from indtruction decode
+         $valid_jump = $valid && $is_load;  
+      @1
+         // Instruction Fetch
+         $imem_rd_en = !>>1$reset;
+         $imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2];     // $imem_rd_addr is going to m4+imem(@1) vinding the vakue of that address    
+         $instr[31:0] = $imem_rd_en ? $imem_rd_data[31:0]: 32'b0;             // and returning it in $imem_rd_data[31:0]
+         
+         
+      @1 //Instructions type decode 
+         $is_i_instr = $instr[6:2] ==? 5'b0000x || 
+                       $instr[6:2] ==? 5'b001x0 || 
+                       $instr[6:2] ==? 5'b11001 ;
+         $is_r_instr = $instr[6:2] ==? 5'b011x0 || 
+                       $instr[6:2] ==? 5'b01011 || 
+                       $instr[6:2] ==? 5'b10100 ; 
+         $is_s_instr = $instr[6:2] ==? 5'b0100x ;
+         $is_b_instr = $instr[6:2] ==? 5'b11000 ;
+         $is_j_instr = $instr[6:2] ==? 5'b11011 ;
+         $is_u_instr = $instr[6:2] ==? 5'b0x101 ;
+         
+           //Instruction immediate decode
+         $imm[31:0] = $is_i_instr ? {{21{$instr[31]}},$instr[30:20] }:
+                      $is_s_instr ? {{21{$instr[31]}},$instr[30:25],$instr[11:8],$instr[7]} :
+                      $is_b_instr ? {{20{$instr[31]}},$instr[7],$instr[30:25],$instr[11:8],1'b0} :
+                      $is_u_instr ? {$instr[31], $instr[30:20],$instr[19:12],12'b0 }:
+                      $is_j_instr ? {{12{$instr[31]}},$instr[19:12],$instr[20],$instr[30:21],1'b0} :
+                      32'b0 ;
+         $opcode[6:0] = $instr[6:0];
+
+           //b. func7 decode
+
+         $func7_valid = $is_r_instr ;
+         ?$func7_valid
+            $func7[6:0] = $instr[31:25];
+         //c. rs2 decode
+
+         $rs2_valid = $is_r_instr || $is_s_instr || $is_b_instr ;
+         ?$rs2_valid
+            $rs2[4:0] = $instr[24:20];
+
+          //d. rs1 valid
+
+         $rs1_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr ;
+         ?$rs1_valid
+            $rs1[4:0] = $instr[19:15] ;
+
+          //e. func3 valid
+
+         $func3_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr ;
+         ?$func3_valid
+            $func3[2:0] = $instr[14:12] ;
+
+         $rd_valid = $is_r_instr || $is_i_instr || $is_u_instr || $is_j_instr ;
+         ?$rd_valid
+            $rd[4:0] = $instr[11:7];     
+      
+         $dec_bits[10:0] = {$func7[5], $func3, $opcode} ;
+         $is_beq = $dec_bits ==? 11'bx_000_1100011 ;
+         $is_bne = $dec_bits ==? 11'bx_001_1100011 ;
+         $is_blt = $dec_bits ==? 11'bx_100_1100011 ;
+         $is_bge = $dec_bits ==? 11'bx_101_1100011 ;           
+         $is_bltu = $dec_bits ==? 11'bx_110_1100011 ;
+         $is_bgeu = $dec_bits ==? 11'bx_111_1100011 ;  
+         $is_addi = $dec_bits ==? 11'bx_000_0010011 ;
+         $is_add = $dec_bits ==? 11'b0_000_0110011 ;
+         
+         $is_load = $dec_bits ==? 11'bx_xxx_0000011;
+         
+         $is_sb = $dec_bits ==? 11'bx_000_0100011;
+         $is_sh = $dec_bits ==? 11'bx_001_0100011;
+         $is_sw = $dec_bits ==? 11'bx_010_0100011;
+         $is_slti = $dec_bits ==? 11'bx_010_0010011;
+         $is_sltiu = $dec_bits ==? 11'bx_011_0010011;
+         $is_xori = $dec_bits ==? 11'bx_100_0010011;
+         $is_ori = $dec_bits ==? 11'bx_110_0010011;
+         $is_andi = $dec_bits ==? 11'bx_111_0010011;
+         $is_slli = $dec_bits ==? 11'b0_001_0010011;
+         $is_srli = $dec_bits ==? 11'b0_101_0010011;
+         $is_srai = $dec_bits ==? 11'b1_101_0010011;
+         $is_sub = $dec_bits ==? 11'b1_000_0110011;
+         $is_sll = $dec_bits ==? 11'b0_001_0110011;
+         $is_slt = $dec_bits ==? 11'b0_010_0110011;
+         $is_sltu = $dec_bits ==? 11'b0_011_0110011;
+         $is_xor = $dec_bits ==? 11'b0_100_0110011;
+         $is_srl = $dec_bits ==? 11'b0_101_0110011;
+         $is_sra = $dec_bits ==? 11'b1_101_0110011;
+         $is_or = $dec_bits ==? 11'b0_110_0110011;
+         $is_and = $dec_bits ==? 11'b0_111_0110011;
+         $is_lui = $dec_bits ==? 11'bx_xxx_0110111;
+         $is_auipc = $dec_bits ==? 11'bx_xxx_0010111;
+         $is_jal = $dec_bits ==? 11'bx_xxx_1101111;
+         $is_jalr = $dec_bits ==? 11'bx_000_1100111;
+         $is_jump = $is_jal || $is_jalr ;
+         
+         `BOGUS_USE($is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add) 
+      @2
+             //Register file read
+         $rf_rd_en1 = $rs1_valid && >>2$result ; //>>2$result because here we are bypassing this result value by 2 clock which we can see in waterfall diagram
+         $rf_rd_index1[4:0] = $rs1 ;
+         $rf_rd_en2 = $rs2_valid && >>2$result;  //>>2$result because here we are bypassing this result value by 2 clock which we can see in waterfall diagram
+         $rf_rd_index2[4:0] = $rs2 ;
+         
+         $src1_value[31:0] = 
+              (>>1$rf_wr_index == $rf_rd_index1) && >>1$rf_wr_en ?
+                 >>1$result :
+                  $rf_rd_data1;  // means when when we need previous result as operand in ALU but we are not able to write it back in RF due to architecture has no time the we directly give previous result to $src1/$src2 otherwise it will take rf_rd_data as usual
+         $src2_value[31:0] = 
+              (>>1$rf_wr_index == $rf_rd_index2) && >>1$rf_wr_en ?
+                 >>1$result :
+                  $rf_rd_data2;  //means when when we need previous result as operand in ALU but we are not able to write it back in RF due to architecture has no time the we directly give previous result to $src1/$src2 otherwise it will take rf_rd_data as usua
+      @3 
+         $jalr_tgt_pc[31:0] = $src1_value + $imm ; ////here we are calculating the target address and this address we will give to PC is $valid_jump condition will satisfy
+      @3
+         //Assigning aadi and add value to ALU
+         $sltu_rslt[31:0] = $src1_value < $src2_value ;
+         $sltiu_rslt[31:0]  = $src1_value < $imm ;
+         
+         $result[31:0] =
+              $is_addi ? $src1_value + $imm :
+              $is_add ? $src1_value + $src2_value :
+              $is_andi ? $src1_value & $imm :
+              $is_ori  ? $src1_value | $imm :
+              $is_xori ? $src1_value ^ $imm :
+              $is_slli ? $src1_value << $imm[5:0] :
+              $is_srli ? $src1_value >> $imm[5:0] :
+              $is_and ? $src1_value & $src2_value :
+              $is_or ? $src1_value | $src2_value :
+              $is_xor ? $src1_value ^ $src2_value :
+              $is_sub ? $src1_value - $src2_value :
+              $is_sll ? $src1_value << $src2_value[4:0] :
+              $is_srl ? $src1_value >> $src2_value[4:0] :
+              $is_sltu ? $src1_value < $src2_value :
+              $is_sltiu ? $src1_value < $imm :
+              $is_lui ? {$imm[31:12], 12'b0} :
+              $is_auipc ? $pc + $imm : 
+              $is_jal ? $pc + 32'd4 :
+              $is_jalr ? $pc + 32'd4 :
+              $is_srai ? {{32{$src1_value[31]}}, $src1_value} >> $imm[4:0] :
+              $is_slt ? ($src1_value[31] == $src2_value[31]) ? $sltu_rslt : {31'b0, $src1_value[31]} :
+              $is_slti ? ($src1_value[31] == $imm[31]) ? $sltiu_rslt : {31'b0, $src1_value[31]} :
+              $is_sra ? {{32{$src1_value[31]}}, $src1_value} >> $src2_value[4:0] :
+              $is_load || $is_s_instr ? $src1_value + $imm :
+              32'bx ;
+      @4 
+         $dmem_wr_en = $is_s_instr && $valid ; //connecting the interface of data memory
+         $dmem_addr[3:0] = $result[5:2] ;
+         $dmem_wr_data[31:0] = $src2_value ;
+         $dmem_rd_en = $is_load ;
+      @4
+         //LOAD DATA
+         $ld_data[31:0] = $dmem_rd_data ;   
+      @3
+         //Register file write
+         $rf_wr_en = $rd_valid && $rd != 5'b0 && $valid || >>2$valid_load ;  //to enable write when load instruction was there before 2 cycle
+         $rf_wr_index[4:0] = >>2$valid_load ? >>2$rd : $rd ;  //to enable write the value in RF when load instruction was there before 2 cycle otherwise it will write the value from rd register only
+         $rf_wr_data[31:0] = >>2$valid_load ? >>2$ld_data : $result ;      // $result is coming from ALU and getting stored in $rf_wr_index[4:0] address of RISC-V register         
+                                            // having value $rf_wr_data   
+      @3
+         //Branch Instructions
+         $taken_branch = $is_beq ? ($src1_value == $src2_value):               //BEQ (Branch if Equal)
+                         $is_bne ? ($src1_value != $src2_value):               //BNE (Branch if Not Equal)  
+                         $is_blt ? (($src1_value < $src2_value) ^ ($src1_value[31] != $src2_value[31])):    // BLT (Branch if Less Than)
+                         $is_bge ? (($src1_value >= $src2_value) ^ ($src1_value[31] != $src2_value[31])):   //BGE (Branch if Greater Than or Equal)
+                         $is_bltu ? ($src1_value < $src2_value):              //BLTU (Branch if Less Than Unsigned)
+                         $is_bgeu ? ($src1_value >= $src2_value):             //BGEU (Branch if Greater Than or Equal Unsigned)
+                                    1'b0;  
+         $valid_taken_branch = ($valid && $taken_branch);
+      @2
+         $br_tgt_pc[31:0] = $pc + $imm;
+            //To invalid the branch taken during invalid instruction or invalid clock
+   // Assert these to end simulation (before Makerchip cycle limit).
+   *passed = |cpu/xreg[15]>>5$value == (1+2+3+4+5+6+7+8+9);
+   *failed = 1'b0;
+   
+   // Macro instantiations for:
+   //  o instruction memory
+   //  o register file
+   //  o data memory
+   //  o CPU visualization
+   |cpu
+      m4+imem(@1)    // Args: (read stage)
+      m4+rf(@2, @3)  // Args: (read stage, write stage) - if equal, no register bypass is required
+      m4+dmem(@4)    // Args: (read/write stage)
+      //m4+myth_fpga(@0)  // Uncomment to run on fpga
+
+   m4+cpu_viz(@4)    // For visualisation, argument should be at least equal to the last stage of CPU logic. @4 would work for all labs.
+\SV
+   endmodule
+```
+#### Log file from macherchip is given below,
+
+<img width="992" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/3acb4bf8-40d0-4d0c-98c3-24821896b292">
+
+Here also we get "PASSED" signal which we can see in above image.
+
+#### Block diagram of 4 stage pipelined RISC-V full architecture is given below,
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/7cd8d19e-38ee-4d22-8cf5-49327b118e5b">
+
+#### waveform from mackerchip
+
+<img width="959" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/86318ee8-4c03-4902-9f56-c57054b4cb11">
+
+#### Implemented design from mackerchip
+
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/22514af2-5d4e-4491-8a58-faa826afbead">
+
 
 ###  Wrap up
 In this workshop, i got knowlage about RISC-V CPU, it's architecture and it's digital level design. Also learn how to use tool like mackerchip and the TL verilog (transational level verilog).
