@@ -2927,7 +2927,8 @@ TL verilog syntax for above connection of interface is given below,
 
 
 ### Lab for add and stores and load to the test program
-Link with a testbench is : "https://myth.makerchip.com/sandbox/0rkfAhzM5/02Rhq4#"
+Link with a testbench is : ```https://myth.makerchip.com/sandbox/0rkfAhzM5/02Rhq4#```
+
 To test the program, we have to add two instructions at the end of Assebly language program.
 
 <img width="171" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/0ddb96b6-483d-48e9-a9be-5d678ccc0ee8">
@@ -2937,6 +2938,7 @@ Here 100 is binary number. because of "sw , r0, r10, 100" we are going to store 
 So passing condition is like ```*passed = |cpu/xreg[15]>>5$value == (1+2+3+4+5+6+7+8+9);
                                 *failed = 1'b0;
                              ```
+                             
 code and log file from the mackerchip is given below,
 
 <img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/40dbd76c-0548-4d62-b08a-36b68ad0f72c">
