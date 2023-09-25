@@ -2577,7 +2577,7 @@ TL verilog code is given below,
          $rf_wr_index[4:0] = $rd;                              // $rd=0(because x0 register of RISC-V always stores vale 32'b0 so can't be rewritten ) 
          $rf_wr_data[31:0] = $result;       // $result is coming from ALU and getting stored in $rf_wr_index[4:0] address of RISC-V register         
                                             // having value $rf_wr_data   
-      @2
+      @3
          //Branch Instructions
          $taken_branch = $is_beq ? ($src1_value == $src2_value):               //BEQ (Branch if Equal)
                          $is_bne ? ($src1_value != $src2_value):               //BNE (Branch if Not Equal)  
@@ -2585,9 +2585,11 @@ TL verilog code is given below,
                          $is_bge ? (($src1_value >= $src2_value) ^ ($src1_value[31] != $src2_value[31])):   //BGE (Branch if Greater Than or Equal)
                          $is_bltu ? ($src1_value < $src2_value):              //BLTU (Branch if Less Than Unsigned)
                          $is_bgeu ? ($src1_value >= $src2_value):             //BGEU (Branch if Greater Than or Equal Unsigned)
-                                    1'b0;                 
+                                    1'b0;  
+         $valid_taken_branch = ($valid && $taken_branch);
+      @2
          $br_tgt_pc[31:0] = $pc + $imm;
-         $valid_taken_branch = ($valid && $taken_branch);   //To invalid the branch taken during invalid instruction or invalid clock
+            //To invalid the branch taken during invalid instruction or invalid clock
    // Assert these to end simulation (before Makerchip cycle limit).
    *passed = |cpu/xreg[10]>>5$value == (1+2+3+4+5+6+7+8+9);
    *failed = 1'b0;
@@ -2610,7 +2612,8 @@ TL verilog code is given below,
 
 Code and log file from makerchip is given below,
 
-<img width="959" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/4a3ad861-d4f1-428c-a56f-3af6279e546d">
+<img width="960" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/397577d0-66c5-4915-8c44-7a907e2c22e4">
+
 
 Here also we are getting "PASSED" signal which we can see in above image.
 
@@ -2623,7 +2626,7 @@ Assuming we have back to back instructions.
 
 <img width="449" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/b2ffc727-da43-4755-b929-88db4b5ba6c3">
 
-Here red dotted line indicating the issue we currently have regardin register file writing that we don't have a time to write register file in previous instruction and read it in this instruction(read after write hazard). So we are going to remove that path and introduce a better solution. The problem we are facing when some instruction came and that want value of previous instruction which we are not able to write in RF due to next instruction strat perfoming. The solution is we will bypass the value (ALU output of previous instructio, that we want in next instruction)what we want to write in the register. we direct use previous value in the next input of ALU by bypassing from previous instruction. This is called register bypass.
+Here red dotted line indicating the issue we currently have regarding register file writing that architecture don't have a time to write register file in previous instruction and read it in this instruction(read after write hazard). So we are going to remove that path and introduce a better solution. The problem we are facing when some instruction came and that want value of previous instruction which we are not able to write in RF due to next instruction strat perfoming. The solution is we will bypass the value (ALU output of previous instructio, that we want in next instruction)what we want to write in the register. we direct use previous value in the next input of ALU by bypassing from previous instruction. This is called register bypass.
 
 For that we are adding this muxes and correcting this register file.
 
@@ -2633,7 +2636,25 @@ To implemet it we have do this modification in code,
 
 <img width="560" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/af7a682e-cd95-49e5-acd7-27a5956ddd75">
 
-
+TL verilog instruction for that is given below,
+```verilog
+@2
+             //Register file read
+         $rf_rd_en1 = $rs1_valid && >>2$result ; //>>2$result because here we are bypassing this result value by 2 clock which we can see in waterfall diagram
+         $rf_rd_index1[4:0] = $rs1 ;
+         $rf_rd_en2 = $rs2_valid && >>2$result;  //>>2$result because here we are bypassing this result value by 2 clock which we can see in waterfall diagram
+         $rf_rd_index2[4:0] = $rs2 ;
+         
+         $src1_value[31:0] = 
+              (>>1$rf_wr_index == $rf_rd_index1) && >>1$rf_wr_en ?
+                 >>1$result :
+                  $rf_rd_data1;  // means when when we need previous result as operand in ALU but we are not able to write it back in RF due to architecture has no time the we directly give previous result to $src1/$src2 otherwise it will take rf_rd_data as usual
+         $src2_value[31:0] = 
+              (>>1$rf_wr_index == $rf_rd_index2) && >>1$rf_wr_en ?
+                 >>1$result :
+                   $rf_rd_data2;  //means when when we need previous result as operand in ALU but we are not able to write it back in RF due to architecture has no time the we directly give previous result to $src1/$src2 otherwise it will take rf_rd_data as usual
+      
+```
 
 ### Lab for branches to correct the branch target path
 #### Task: Correct the branch traget path in branch type instruction
