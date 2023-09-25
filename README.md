@@ -2678,7 +2678,16 @@ To implement it we have to do some modification like this given below instructio
 
 <img width="505" alt="image" src="https://github.com/piyushkandoriya/RISC-V-based-MYTH/assets/123488595/6f57795e-d388-4edb-95ee-22d605156a44">
 
+First step is, we have to move $valid signal to @3 stage from @1 stage. because at that stage only we find the instruction regarding branch taken or not. and based on branch intsruction we have to modify the $valid signal. previously $valid we defined based on 3 cycles. now it is based on branch taken.
 
+But now we move valid signal to @3 stage then PC will increment after every cycle. because before PC syntax has to take care about branch instruction but now $valid is handaling it. For that we change syntax >>3$pc+ 32'd4 to >>1pc+32'd4.
+
+TL verilog changes is  given by,
+```verilog
+   $pc[31:0] = >>1$reset ? 32'd0 : (>>3$valid_taken_branch ? >>3$br_tgt_pc :  (>>1$pc+32'd4)); // >>1$pc+32'd4 from >>3$pc+32'd4  to increment PC after every clock cycle
+      @3
+         $valid = !(>>1$valid_taken_br || >>2$valid_taken_br);  // means valid signal give output only when in previous two stage there is no branch taken. and then pipeline work as usual 
+```
 
 ### Lab to complete instruction decode except Fence and Ecell and Ebreak
 Till now we write the code to decode only subset instructions. Now lets decode other remaining instructions also.
