@@ -1105,7 +1105,7 @@ TL verilog code for 2-cycle calculator with validity is given below,
             $sum[31:0] = $val1+$val2;
             $diff[31:0] = $val1-$val2;
             $prod[31:0] = $val1*$val2;
-            $div[31:0] = $val1/$val2;
+            $qout[31:0] = $val1/$val2;
             
          @2
             $out[31:0] = ($reset) ? 32'h0 : (($op[1:0] == 2'b00) ? $sum[31:0] : (($op[1:0] == 2'b01) ? $diff[31:0] : (($op[1:0] == 2'b10) ? $prod[31:0] : (($op[1:0] == 2'b11) ? $qout[31:0] : 32'b0))));
@@ -1148,7 +1148,7 @@ TL code for calculator singal value memory is given below,
             $sum [31:0] = $val1 + $val2;
             $diff[31:0] = $val1 - $val2;
             $prod[31:0] = $val1 * $val2;
-            $div[31:0] = $val1 / $val2;
+            $qout[31:0] = $val1 / $val2;
 
          @2   
             $mem[31:0] = $reset ? 32'b0 :
