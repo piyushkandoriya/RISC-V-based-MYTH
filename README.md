@@ -3282,11 +3282,28 @@ TL verilog syntax which we have to add and change in previous code is given,
                      (>>3$valid_jump && >>3$is_jalr) ? >>3$jalr_tgt_pc : >>1$inc_pc;
          
          $imem_rd_en = !$reset;
-         $imem_rd_addr[31:0] = $pc[M4_IMEM_INDEX_CNT+1:2];
+         $imem_rd_addr[31:0] = $pc[M4_IMEM_INDEX_CNT+1:2];   // $imem_rd_addr is going to m4+imem(@1) vinding the vakue of that address    
+
+      @3
+         $valid = !(>>1$valid_taken_br || >>2$valid_taken_br || >>1$valid_load || >>2$valid_load || >>1$valid_jump || >>2$valid_jump);
+         $taken_br = $is_beq ? ($src1_value == $src2_value) :  //BEQ (Branch if Equal) 
+                     $is_bne ? ($src1_value != $src2_value) :  //BNE (Branch if Not Equal)  
+                     $is_blt ? (($src1_value < $src2_value) ^ ($src1_value[31] != $src2_value[31])) :   // BLT (Branch if Less Than)
+                     $is_bge ? (($src1_value >= $src2_value) ^ ($src1_value[31] != $src2_value[31])) :  //BGE (Branch if Greater Than or Equal)
+                     $is_bltu ? ($src1_value < $src2_value) :    //BLTU (Branch if Less Than Unsigned)
+                     $is_bgeu ? ($src1_value >= $src2_value) : 1'b0;    //BGEU (Branch if Greater Than or Equal Unsigned)
+                     
+         $valid_taken_br = $valid && $taken_br;
+         
+         $valid_load = $valid && $is_load;  //$is_load is load operation decoded bits from indtruction decode
+         $valid_jump = $valid && $is_jump; // $is_jump = ($is_jal || $is_jalr);
+
+         
          
       @1         
-         $instr[31:0] = $imem_rd_data[31:0];
-         $inc_pc[31:0] = $pc + 32'd4;  
+         $instr[31:0] = $imem_rd_data[31:0]; // returning it in $imem_rd_data[31:0]
+         $inc_pc[31:0] = $pc + 32'd4;
+
       // Decode   
          $is_i_instr = $instr[6:2] ==? 5'b0000x ||
                        $instr[6:2] ==? 5'b001x0 ||
@@ -3380,16 +3397,15 @@ TL verilog syntax which we have to add and change in previous code is given,
          $rf_rd_en2 = $rs2_valid;
          ?$rf_rd_en2
             $rf_rd_index2[4:0] = $rs2[4:0];
-            
+                     
+      // Input signals to ALU
+         $src1_value[31:0] = ((>>1$rd == $rs1) && >>1$rf_wr_en) ? >>1$result : $rf_rd_data1[31:0]; // means when when we need previous result as operand in ALU but we are not able to write it back in RF due to architecture has no time the we directly give previous result to $src1/$src2 otherwise it will take rf_rd_data as usual
+         $src2_value[31:0] = ((>>1$rd == $rs2) && >>1$rf_wr_en) ? >>1$result : $rf_rd_data2[31:0];  //means when when we need previous result as operand in ALU but we are not able to write it back in RF due to architecture has no time the we directly give previous result to $src1/$src2 otherwise it will take rf_rd_data as usual
       // Branch Target PC       
          $br_tgt_pc[31:0] = $pc + $imm;
       
       // Jump Target PC
          $jalr_tgt_pc[31:0] = $src1_value + $imm;
-         
-      // Input signals to ALU
-         $src1_value[31:0] = ((>>1$rd == $rs1) && >>1$rf_wr_en) ? >>1$result : $rf_rd_data1[31:0];
-         $src2_value[31:0] = ((>>1$rd == $rs2) && >>1$rf_wr_en) ? >>1$result : $rf_rd_data2[31:0];
          
       @3   
          
@@ -3429,22 +3445,9 @@ TL verilog syntax which we have to add and change in previous code is given,
       
          $rf_wr_data[31:0] = !$valid ? >>2$ld_data[31:0] : $result[31:0];
       
-      // Branch
-         $taken_br = $is_beq ? ($src1_value == $src2_value) :
-                     $is_bne ? ($src1_value != $src2_value) :
-                     $is_blt ? (($src1_value < $src2_value) ^ ($src1_value[31] != $src2_value[31])) :
-                     $is_bge ? (($src1_value >= $src2_value) ^ ($src1_value[31] != $src2_value[31])) :
-                     $is_bltu ? ($src1_value < $src2_value) :
-                     $is_bgeu ? ($src1_value >= $src2_value) : 1'b0;
-                     
-         $valid_taken_br = $valid && $taken_br;
-         
-      // Load
-         $valid_load = $valid && $is_load;
-         $valid = !(>>1$valid_taken_br || >>2$valid_taken_br || >>1$valid_load || >>2$valid_load || >>1$valid_jump || >>2$valid_jump);
+        
       
-      // Jump
-         $valid_jump = $valid && $is_jump;
+      
                   
       @4
          $dmem_rd_en = $valid_load;
